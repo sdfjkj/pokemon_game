@@ -1,6 +1,5 @@
 .main_page{
   margin-top:150px;
-  border:1px solid black;
   width: 1020px;
 }
 .game_container{
@@ -8,14 +7,71 @@
   flex-flow:column nowrap;
   justify-content: center;
   align-items: center;
+  border:2px solid black;
 }
 .start_button{
-  width:300px;
+  position:absolute;
+  top:170px;
+  width:150px;
+  padding:10px 30px;
+  font-size: 15px;
+  line-height: 23px;
+  font-weight: bold;
+  color: white;
+  background: linear-gradient(to bottom right, #ff5f6d, #ffc371);
+  border: none;
+  border-radius: 5px;
+  box-shadow: 0px 10px 10px rgba(0,0,0,0.15);
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 .card_container{
+  margin:120px 10px 100px 10px;
   display:flex;
-  justify-content: space-between;
+  flex-wrap: wrap;
+  justify-content: center;
   align-items: center;
-  width:600px;
+  width:850px;
 }
 
+.pokemon_box{
+  border:1px solid black;
+  width:160px;
+  height:200px;
+  display:flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.pokemon_name, .pokemon_stat_attack{
+  font-weight:bold;
+  margin:5px 0px;
+}
+
+.pokemon_container:hover{
+  cursor:pointer
+}
+
+.selected_pokemon_zone{
+  display:flex;
+  flex-direction: column;
+  align-items: center;
+  height:300px;
+  border:1px solid black;
+  width:500px;
+  padding:20px;
+  margin-bottom: 70px;
+  border-radius: 10px;
+}
+.selected_pokemon_name{
+  font-weight:bold;
+  font-size: 20px;
+  margin:5px 0px 30px 0px;
+  font-style: italic;
+  
+}
+.selected_pokemon_container{
+  display:flex;
+  justify-content:center;
+}

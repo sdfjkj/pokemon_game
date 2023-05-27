@@ -9,13 +9,7 @@ import { CardGame } from "./pages/cardGame/cardGame";
 import { Proposal } from "./pages/proposal/proposal";
 import { AboutUs } from "./pages/aboutUs/aboutUs";
 import MBTI from "./pages/MBTI/MBTI";
-// const rootElement = document.getElementById("root");
-// rootElement.style.height = "100vh";
-// rootElement.style.width = "100vw";
-// rootElement.style.display = "flex";
-// rootElement.style.flexDirection = "column";
-// rootElement.style.alignItems = "center";
-// const root = ReactDOM.createRoot(rootElement);
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
 function App() {

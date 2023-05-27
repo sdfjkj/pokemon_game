@@ -1,7 +1,15 @@
-.footer{
+.footer {
   background-color: beige;
-  margin:10px;
-  height:100px;
-  width:1000px;
-  padding:10px;
+  margin: 10px;
+  height: 100px;
+  width: 960px;
+  padding: 30px;
+  border: 2px solid black;
+  margin-bottom: 40px;
+}
+.author {
+  font-size: 17px;
+  letter-spacing: 2px;
+  font-weight: bold;
+  font-style: italic;
 }
