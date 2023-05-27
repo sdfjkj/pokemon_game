@@ -11,11 +11,11 @@ export const Randering = () => {
         <Link to="/main" className="button">
           Poke Wiki
         </Link>
-        <Link to="/main" className="button">
-          Play Now
+        <Link to="/Card_Game" className="button">
+          Card Game
         </Link>
         <Link to="/main" className="button">
-          Find Partner
+          Poke MBTI
         </Link>
       </div>
     </div>

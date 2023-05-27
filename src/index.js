@@ -1,32 +1,44 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { Route, BrowserRouter, Routes } from "react-router-dom";
+import { Route, BrowserRouter as Router, Routes, useLocation, Navigate } from "react-router-dom";
+
 import Header from "./components/header/header";
 import Footer from "./components/footer/footer";
 import { Randering } from "./pages/randering/randering";
-import { Main } from "./pages/main/main";
+import { CardGame } from "./pages/cardGame/cardGame";
 import { Proposal } from "./pages/proposal/proposal";
 import { AboutUs } from "./pages/aboutUs/aboutUs";
 
-const rootElement = document.getElementById("root");
-rootElement.style.height = '100vh';
-rootElement.style.width = '100vw';
-rootElement.style.display = 'flex';
-rootElement.style.flexDirection = 'column';
-rootElement.style.alignItems = 'center';
-rootElement.style.backgroundColor = '#fafafa';
-const root = ReactDOM.createRoot(rootElement);
-root.render(
-  <React.StrictMode>
-    <BrowserRouter>
-      <Header />
+// const rootElement = document.getElementById("root");
+// rootElement.style.height = "100vh";
+// rootElement.style.width = "100vw";
+// rootElement.style.display = "flex";
+// rootElement.style.flexDirection = "column";
+// rootElement.style.alignItems = "center";
+// const root = ReactDOM.createRoot(rootElement);
+const root = ReactDOM.createRoot(document.getElementById('root'));
+
+function App() {
+  const location = useLocation();
+  const headerProps = { currentPath: location.pathname };
+
+  return (
+    <React.StrictMode>
+      <Header {...headerProps} />
       <Routes>
-        <Route exact path="/" element={<Randering />} />
-        <Route exact path="/main" element={<Main />} />
-        <Route exact path="/proposal" element={<Proposal />} />
-        <Route exact path="/aboutus" element={<AboutUs />} />
+        <Route exact path="/" element={<Navigate to="/Randering" />} />
+        <Route exact path="/Randering" element={<Randering />} />
+        <Route exact path="/Card_Game" element={<CardGame />} />
+        <Route exact path="/Proposal" element={<Proposal />} />
+        <Route exact path="/About_Us" element={<AboutUs />} />
       </Routes>
       <Footer />
-    </BrowserRouter>
-  </React.StrictMode>
+    </React.StrictMode>
+  );
+}
+
+root.render(
+  <Router>
+    <App />
+  </Router>
 );

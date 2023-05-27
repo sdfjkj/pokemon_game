@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import axios from "axios";
-
-export const Main = () =>  {
+import "./cardGame.css";
+export const CardGame = () => {
   const generateRandomNumber = () => {
-    return Math.floor(Math.random() * 100);
+    return Math.floor(Math.random() * 1010) + 1;
   };
   const [mypokemon, setMypokemon] = useState([]);
   const [compokemon, setCompokemon] = useState([]);
@@ -13,7 +13,7 @@ export const Main = () =>  {
         {pokemon && (
           <div>
             <img
-              src={pokemon.sprites.back_default}
+              src={pokemon.sprites.front_shiny}
               alt="pokemon"
               className="poke_img"
               style={{ width: "200px" }}
@@ -46,7 +46,15 @@ export const Main = () =>  {
   const game_setting = () => {
     setCompokemon([]);
     setMypokemon([]);
-    const newNumbers = Array.from({ length: 6 }, () => generateRandomNumber());
+
+
+    const newNumbersSet = new Set();
+
+    while (newNumbersSet.size < 6) {
+      newNumbersSet.add(generateRandomNumber());
+    }
+
+    const newNumbers = [...newNumbersSet];
     async function fetchPokemonData() {
       const response1 = await axios.get(
         `https://pokeapi.co/api/v2/pokemon/${newNumbers[0]}`
@@ -77,19 +85,21 @@ export const Main = () =>  {
   };
 
   return (
-    <div className="game_container">
-      <button onClick={game_setting} className="start_button">
-        Draw
-      </button>
-      <div className="card_container">
-        <div className="comCard">
-          {compokemon && compokemon.map((el) => <Cards {...el} onClick=""/>)}
-        </div>
-        
-        <div className="myCard">
-          {mypokemon && mypokemon.map((el) => <Cards {...el} />)}
+    <div className="main_page">
+      <div className="game_container">
+        <button onClick={game_setting} className="start_button">
+          Draw
+        </button>
+        <div className="card_container">
+          <div className="comCard">
+            {compokemon && compokemon.map((el) => <Cards {...el} onClick="" />)}
+          </div>
+
+          <div className="myCard">
+            {mypokemon && mypokemon.map((el) => <Cards {...el} />)}
+          </div>
         </div>
       </div>
     </div>
   );
-}
+};

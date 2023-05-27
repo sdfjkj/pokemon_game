@@ -1,5 +1,7 @@
-h3{
-  margin:0px 20px 20px 20px;
+.main_page{
+  margin-top:150px;
+  border:1px solid black;
+  width: 1020px;
 }
 .game_container{
   display:flex;
