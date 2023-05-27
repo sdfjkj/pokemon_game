@@ -8,7 +8,7 @@ import { Randering } from "./pages/randering/randering";
 import { CardGame } from "./pages/cardGame/cardGame";
 import { Proposal } from "./pages/proposal/proposal";
 import { AboutUs } from "./pages/aboutUs/aboutUs";
-
+import MBTI from "./pages/MBTI/MBTI";
 // const rootElement = document.getElementById("root");
 // rootElement.style.height = "100vh";
 // rootElement.style.width = "100vw";
@@ -31,6 +31,7 @@ function App() {
         <Route exact path="/Card_Game" element={<CardGame />} />
         <Route exact path="/Proposal" element={<Proposal />} />
         <Route exact path="/About_Us" element={<AboutUs />} />
+        <Route exact path="/MBTI" element={<MBTI />} />
       </Routes>
       <Footer />
     </React.StrictMode>
