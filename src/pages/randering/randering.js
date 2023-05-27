@@ -14,7 +14,7 @@ export const Randering = () => {
         <Link to="/main" className="button">
           Play Now
         </Link>
-        <Link to="/main" className="button">
+        <Link to="/mbti" className="button">
           Find Partner
         </Link>
       </div>
