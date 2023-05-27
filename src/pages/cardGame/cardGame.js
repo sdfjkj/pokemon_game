@@ -42,48 +42,37 @@ export const CardGame = () => {
   };
 
   const battle = (pokemon1, pokemon2) => {};
-
   const game_setting = () => {
     setCompokemon([]);
     setMypokemon([]);
 
-
     const newNumbersSet = new Set();
 
-    while (newNumbersSet.size < 6) {
+    // modify this to generate 10 unique numbers
+    while (newNumbersSet.size < 10) {
       newNumbersSet.add(generateRandomNumber());
     }
 
     const newNumbers = [...newNumbersSet];
+
     async function fetchPokemonData() {
-      const response1 = await axios.get(
-        `https://pokeapi.co/api/v2/pokemon/${newNumbers[0]}`
-      );
-      setMypokemon((mypokemon) => [...mypokemon, response1.data]);
-      const response2 = await axios.get(
-        `https://pokeapi.co/api/v2/pokemon/${newNumbers[1]}`
-      );
-      setMypokemon((mypokemon) => [...mypokemon, response2.data]);
-      const response3 = await axios.get(
-        `https://pokeapi.co/api/v2/pokemon/${newNumbers[2]}`
-      );
-      setMypokemon((mypokemon) => [...mypokemon, response3.data]);
-      const response4 = await axios.get(
-        `https://pokeapi.co/api/v2/pokemon/${newNumbers[3]}`
-      );
-      setCompokemon((compokemon) => [...compokemon, response4.data]);
-      const response5 = await axios.get(
-        `https://pokeapi.co/api/v2/pokemon/${newNumbers[4]}`
-      );
-      setCompokemon((compokemon) => [...compokemon, response5.data]);
-      const response6 = await axios.get(
-        `https://pokeapi.co/api/v2/pokemon/${newNumbers[5]}`
-      );
-      setCompokemon((compokemon) => [...compokemon, response6.data]);
+      // modify this to fetch data for 10 different Pokemon
+      for (let i = 0; i < 10; i++) {
+        const response = await axios.get(
+          `https://pokeapi.co/api/v2/pokemon/${newNumbers[i]}`
+        );
+
+        // assign the first 5 to the user, the rest to the computer
+        if (i < 5) {
+          setMypokemon((mypokemon) => [...mypokemon, response.data]);
+        } else {
+          setCompokemon((compokemon) => [...compokemon, response.data]);
+        }
+      }
     }
+
     fetchPokemonData();
   };
-
   return (
     <div className="main_page">
       <div className="game_container">
