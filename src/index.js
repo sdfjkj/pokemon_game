@@ -7,6 +7,7 @@ import { Randering } from "./pages/randering/randering";
 import { Main } from "./pages/main/main";
 import { Proposal } from "./pages/proposal/proposal";
 import { AboutUs } from "./pages/aboutUs/aboutUs";
+import MBTI  from "./pages/MBTI/MBTI";
 
 const rootElement = document.getElementById("root");
 rootElement.style.height = '100vh';
@@ -25,6 +26,8 @@ root.render(
         <Route exact path="/main" element={<Main />} />
         <Route exact path="/proposal" element={<Proposal />} />
         <Route exact path="/aboutus" element={<AboutUs />} />
+        <Route exact path="/mbti" element={<MBTI />} />
+
       </Routes>
       <Footer />
     </BrowserRouter>
