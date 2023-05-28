@@ -1,6 +1,6 @@
 import {React, useState} from 'react'
-
-import './MBTI.css'
+import {Progress} from 'antd';
+import './MBTI.css';
 
 const query = [
     {
@@ -46,14 +46,14 @@ const TestPage = ({idx,setIdx}) =>{
         <button className="selectButton" onClick={()=>{
             if(idx<query.length){setIdx(idx+1)}
         }}>{query[idx].answer2}</button>
-        {/* <Progress
+        <Progress
             percent={((idx+1) / query.length)*100}
             strokeColor={{
                 '0%': '#108ee9',
                 '100%': '#87d068',
             }}
             showInfo={false}
-        /> */}
+        />
         <span>{idx+1} / {query.length}</span>
     </div>
 }

@@ -1,0 +1,35 @@
+.ingame_page {
+  margin-top: 150px;
+  width: 1020px;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid black;
+  padding-top:50px;
+  padding-bottom:50px;
+}
+.ingame_pokemon_box{
+    border: 1px solid black;
+    width: 160px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding:0px 20px 30px;
+    
+}
+
+.selected_pokemon_container{
+
+  
+}
+
+.stat{
+  font-weight: bold;
+}
+.name{
+  margin-bottom: 20px;
+  text-align: center;
+  font-weight: bold;
+
+}

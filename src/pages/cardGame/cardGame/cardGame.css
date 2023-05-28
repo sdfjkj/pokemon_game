@@ -1,0 +1,160 @@
+.game_page {
+  margin-top: 150px;
+  width: 1020px;
+}
+.game_container {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid black;
+}
+.start_button_container{
+  display:flex;
+  justify-content: flex-start;
+  width:850px;
+}
+.start_button {
+  margin:45px 0px 30px 20px;
+  width: 200px;
+  letter-spacing: 2px;
+  padding: 10px 30px;
+  font-size: 20px;
+  line-height: 30px;
+  font-weight: bold;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  background: linear-gradient(to bottom right, #ff5f6d, #ffc371);
+  transition: all 0.3s ease;
+}
+.card_container {
+  margin: 20px 10px 30px 10px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  width: 850px;
+  height:402px;
+}
+
+.pokemon_box {
+  border: 1px solid black;
+  width: 160px;
+  height: 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.pokemon_name,
+.pokemon_stat_attack {
+  font-weight: bold;
+  margin: 5px 0px;
+}
+
+.pokemon_container:hover {
+  cursor: pointer;
+}
+
+.selected_pokemon_zone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 300px;
+  border: 1px solid black;
+  width: 420px;
+  padding: 20px;
+  margin-top: 30px;
+  margin-bottom: 80px;
+  border-radius: 10px;
+}
+.selected_pokemon_name {
+  font-weight: bold;
+  font-size: 20px;
+  margin: 5px 0px 30px 0px;
+  font-style: italic;
+}
+.selected_pokemon_container {
+  display: flex;
+  justify-content: center;
+}
+
+.selected {
+  background-color: #c3fac4;
+}
+
+/* 두개 선택되었을때 */
+.game_start_button {
+  text-decoration: none;
+  width: 200px;
+  
+  padding: 20px 20px;
+  text-align: center;
+  font-size: 20px;
+  line-height: 23px;
+  font-weight: bold;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  background: linear-gradient(to bottom right, #ff5f6d, #ffc371);
+  transition: all 0.3s ease;
+}
+
+.disabled_button {
+  width: 200px;
+  padding: 20px 20px;
+  font-size: 20px;
+  line-height: 23px;
+  font-weight: bold;
+  cursor: not-allowed;
+  text-decoration: none;
+  border: 1px solid black;
+  border-radius: 5px;
+  box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.15);
+  background-color: white;
+  text-align: center;
+}
+
+.warning {
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  width: 200px;
+  margin-bottom: 30px;
+  font-weight: bold;
+  padding: 20px;
+  font-size: 17px;
+  font-style: italic;
+  line-height: 30px;
+  border-radius: 10px;
+  color: white;
+  background: linear-gradient(to bottom right, #6e7cff, #b6b2e4);
+  transition: all 0.3s ease;
+  
+}
+
+.game_state_container {
+  display: flex;
+  justify-content: center;
+}
+.game_button_container {
+  display: flex;
+  justify-content: center;
+}
+
+.text_button_container{
+  display:flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height:235px;
+  margin-top:30px;
+  margin-left:30px;
+  padding:20px;
+}
+

@@ -5,10 +5,12 @@ import { Route, BrowserRouter as Router, Routes, useLocation, Navigate } from "r
 import Header from "./components/header/header";
 import Footer from "./components/footer/footer";
 import { Randering } from "./pages/randering/randering";
-import { CardGame } from "./pages/cardGame/cardGame";
+import { CardGame } from "./pages/cardGame/cardGame/cardGame";
+import { Game } from "./pages/cardGame/ingame/ingame";
 import { Proposal } from "./pages/proposal/proposal";
 import { AboutUs } from "./pages/aboutUs/aboutUs";
 import MBTI from "./pages/MBTI/MBTI";
+
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
@@ -23,6 +25,7 @@ function App() {
         <Route exact path="/" element={<Navigate to="/Randering" />} />
         <Route exact path="/Randering" element={<Randering />} />
         <Route exact path="/Card_Game" element={<CardGame />} />
+        <Route exact path="/Game" element={<Game />} />
         <Route exact path="/Proposal" element={<Proposal />} />
         <Route exact path="/About_Us" element={<AboutUs />} />
         <Route exact path="/MBTI" element={<MBTI />} />
