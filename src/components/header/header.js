@@ -14,11 +14,13 @@ function Header(props) {
         <Link to="/Proposal">Report</Link>
         <Link to="/About_Us">About Us</Link>
       </div>
-      <img
+      <Link to ="/Randering">
+        <img
         src="https://lh3.googleusercontent.com/3TSaKxXGo2wT0lu0AyNUBnkk6wkCC2AzOhJyy3JXIPm-AmZ1k9DSAroWeBUyePswCZSs5lVp3mPF7HzUpY9VPlyOV5eddITONINr3WSqLNLm=e365-w512"
         className="header_logo"
         alt="logo"
-      />
+        />
+      </Link>
     </div>
   );
 }
