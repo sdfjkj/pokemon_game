@@ -54,7 +54,12 @@ const TestPage = ({idx,setIdx}) =>{
             }}
             showInfo={false}
         />
-        <span>{idx+1} / {query.length}</span>
+        
+        <div>{idx+1} / {query.length}</div>
+        <br></br>
+        <button onClick={()=>{
+            if(idx>0){setIdx(idx-1)}
+            }}>뒤로</button>
     </div>
 }
 
