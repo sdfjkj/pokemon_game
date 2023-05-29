@@ -164,7 +164,7 @@ function Error() {
                 </div>
                 </div>
                 <div className="button1" onClick={()=>{
-                    navigate('/');
+                    navigate(-1);
                 }}>TO HOME</div>
             </div>
             <div className="sorry1">Oops! Sorry, page not found.</div>
