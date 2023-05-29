@@ -5,14 +5,27 @@ function Header(props) {
 
   const pathWithoutSlash = props.currentPath.slice(1);
   const formattedPath = pathWithoutSlash.replace(/_/g, ' ');
+  const url = window.location.href;
 
   return (
     <div className="header">
       <div className="pagename">{formattedPath}</div>
       <div className="nav">
-        <Link to="/Randering">Randering</Link>
-        <Link to="/Proposal">Report</Link>
-        <Link to="/About_Us">About Us</Link>
+        <Link to="/Randering" 
+            style={{
+              color : url.includes("Randering") ? "white" : "yellow"
+            }}>
+              Randering
+        </Link>
+        <Link to="/Proposal"
+        style={{
+          color : url.includes("Proposal") ? "white" : "yellow"
+        }}
+        >Report</Link>
+        <Link to="/About_Us" style={{
+              color : url.includes("About_Us") ? "white" : "yellow"
+            }}
+            >About Us</Link>
       </div>
       <Link to ="/Randering">
         <img
