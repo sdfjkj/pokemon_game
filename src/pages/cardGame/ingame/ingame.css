@@ -6,30 +6,17 @@
   justify-content: center;
   align-items: center;
   border: 2px solid black;
-  padding-top:50px;
+  padding-top:20px;
   padding-bottom:50px;
 }
-.ingame_pokemon_box{
-    border: 1px solid black;
-    width: 160px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding:0px 20px 30px;
-    
-}
-
-.selected_pokemon_container{
-
-  
-}
-
-.stat{
+.turn_count{
   font-weight: bold;
-}
-.name{
-  margin-bottom: 20px;
-  text-align: center;
-  font-weight: bold;
+  font-size:25px;
 
 }
+.modal_pokemon_container{
+  display:flex;
+  justify-content: center;
+}
+
+

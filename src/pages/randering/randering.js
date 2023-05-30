@@ -1,23 +1,18 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import './randering.css'
-
+import { RanderingPage, ButtonContainer, Zenigame, StyledLink } from "./styled";
 
 export const Randering = () => {
   return (
-    <div className="randering_page">
-      <img src="https://pokemon.itple.co.kr/public/img/pokemon/7.webp" className="zenigame" alt="img2"/>
-      <div className="button_container">
-        <Link to="/main" className="button">
-          Poke Wiki
-        </Link>
-        <Link to="/Card_Game" className="button">
-          Card Game
-        </Link>
-        <Link to="/MBTI" className="button">
-          Poke MBTI
-        </Link>
-      </div>
-    </div>
+    <RanderingPage>
+      <Zenigame
+        src="https://pokemon.itple.co.kr/public/img/pokemon/7.webp"
+        alt="img2"
+      />
+      <ButtonContainer>
+        <StyledLink to="/main">Poke Wiki</StyledLink>
+        <StyledLink to="/Card_Game">Card Game</StyledLink>
+        <StyledLink to="/MBTI">Poke MBTI</StyledLink>
+      </ButtonContainer>
+    </RanderingPage>
   );
-}
+};
