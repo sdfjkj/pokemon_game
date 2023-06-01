@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useReducer, useEffect, useRef } from "react";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
 import {
@@ -18,36 +18,116 @@ import {
   OwnerName,
 } from "./styled.js";
 
+const initialState = {
+  myPokemon: [],
+  turn: 0,
+  selectedPokemon: null,
+  comPokemon: [],
+  selectedCard: null,
+  isModalVisible: true,
+  text: "Let's Win !!",
+  myHp: 0,
+  comHp: 0,
+  count: 3,
+  MyAttackType: null,
+  comAttackType: null,
+  disableSpecialComAttack: false,
+  disableSpecialComDefense: false,
+  buttonVisible: false,
+};
+
+const gameReducer = (state, action) => {
+  switch (action.type) {
+    case "SET_MY_POKEMON":
+      return { ...state, myPokemon: action.payload };
+    case "SET_TURN":
+      return { ...state, turn: state.turn + 1 };
+    case "SET_SELECTED_POKEMON":
+      return { ...state, selectedPokemon: action.payload };
+    case "SET_COM_POKEMON":
+      return { ...state, comPokemon: action.payload };
+    case "SET_SELECTED_CARD":
+      return { ...state, selectedCard: action.payload };
+    case "SHOW_MODAL":
+      return { ...state, isModalVisible: true };
+    case "HIDE_MODAL":
+      return { ...state, isModalVisible: false };
+    case "SET_TEXT":
+      return { ...state, text: action.payload };
+    case "SET_MY_HP":
+      return { ...state, myHp: action.payload };
+    case "SET_COM_HP":
+      return { ...state, comHp: action.payload };
+    case "decreaseCount":
+      return { ...state, count: state.count - 1 };
+    case "resetCount":
+      return { ...state, count: 3 };
+    case "SET_MY_ATTACK_TYPE":
+      return { ...state, MyAttackType: action.payload };
+    case "SET_COM_ATTACK_TYPE":
+      return { ...state, comAttackType: action.payload };
+    case "DISABLE_SPECIAL_COM_ATTACK":
+      return { ...state, disableSpecialComAttack: true };
+    case "DISABLE_SPECIAL_COM_DEFENSE":
+      return { ...state, disableSpecialComDefense: true };
+    case "SHOW_TYPE_BUTTON":
+      return { ...state, buttonVisible: true };
+    case "HIDE_TYPE_BUTTON":
+      return { ...state, buttonVisible: false };
+    default:
+      throw new Error();
+  }
+};
+
+// 타이머 해결하기 clearInterval이 제대로 안쳐먹는듯
+
 export const Game = () => {
+  const [state, dispatch] = useReducer(gameReducer, initialState);
+  const stateRef = useRef(state);
   const location = useLocation();
-  const myPokemon = location.state.selectedpokemon;
-  const [turn, setTurn] = useState(1);
-  const [selectedPokemon, setSelectedPokemon] = useState(null); // 추가: 선택된 포켓몬 상태
-  const [comPokemon, setComPokemon] = useState([]);
-  const [selectedCard, setSelectedCard] = useState(null);
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [myHp, setMyHp] = useState(0);
-  const [comHp, setComHp] = useState(0);
-
-  const [selectedAttackType, setSelectedAttackType] = useState(null);
-  const [comAttackType, setComAttackType] = useState(null);
-
-  const [disableSpecialComAttack, setDisableSpecialComAttack] = useState(false);
-  const [disableSpecialComDefense, setDisableSpecialComDefense] =
-    useState(false);
-  const [disableSpecialMyAttack, setDisableSpecialMyAttack] = useState(false);
-  const [disableSpecialMyDefense, setDisableSpecialMyDefense] = useState(false);
-
   useEffect(() => {
+    dispatch({
+      type: "SET_MY_POKEMON",
+      payload: location.state.selectedpokemon,
+    });
     game_setting();
-    showModal();
   }, []);
 
   useEffect(() => {
-    if (comPokemon.length > 0 && selectedCard) {
+    if (state.comPokemon.length > 0 && state.isModalVisible === false) {
       settingHp();
     }
-  }, [comPokemon, selectedCard]);
+  }, [state.isModalVisible, state.selectedCard]);
+
+  useEffect(() => {
+    stateRef.current = state;
+  }, [state]);
+
+  useEffect(() => {
+    dispatch({ type: "HIDE_TYPE_BUTTON" });
+    if (state.isModalVisible === false) {
+      const timer = setInterval(() => {
+        if (stateRef.current.count > 0) {
+          dispatch({ type: "decreaseCount" });
+        } else {
+          clearInterval(timer);
+        }
+      }, 1000);
+      const timeoutId = setTimeout(afterCountdown, 4000);
+
+      return () => {
+        clearInterval(timer);
+        clearTimeout(timeoutId);
+      };
+    }
+  }, [state.myHp, state.comHp]);
+
+  const afterCountdown = () => {
+    dispatch({ type: "SET_TURN" });
+    dispatch({ type: "SHOW_TYPE_BUTTON" });
+    dispatch({ type: "SET_TEXT", payload: `Turn ${state.turn}` });
+    dispatch({ type: "resetCount" });
+  };
 
   const generateRandomNumber = () => {
     return Math.floor(Math.random() * 1010) + 1;
@@ -58,7 +138,6 @@ export const Game = () => {
     while (newNumbersSet.size < 2) {
       newNumbersSet.add(generateRandomNumber());
     }
-
     const newNumbers = [...newNumbersSet];
 
     async function fetchPokemonData() {
@@ -69,27 +148,27 @@ export const Game = () => {
         );
         newPokemon.push(response.data);
       }
-      setComPokemon(newPokemon);
+
+      dispatch({ type: "SET_COM_POKEMON", payload: newPokemon });
     }
     fetchPokemonData();
   };
 
-  const showModal = () => {
-    setIsModalVisible(true);
-  };
-
   const handleOk = () => {
-    setIsModalVisible(false);
-    setSelectedPokemon(null); // 변경: 선택된 포켓몬 상태를 null로 설정
+    dispatch({ type: "SET_SELECTED_POKEMON", payload: null });
   };
 
   const clickedHandCard = (p) => {
-    setSelectedPokemon(p); // 추가: 선택된 포켓몬 상태 설정
-    showModal(); // 추가: 모달 보이기
+    dispatch({ type: "SET_SELECTED_POKEMON", payload: p });
   };
-
-  const nextTurn = () => {
-    setTurn((prevTurn) => prevTurn + 1);
+  const checkPokemonHp = () => {
+    if (state.myHp <= 0 || state.comHp <= 0) {
+      const newSelectedCard =
+        state.myPokemon[0] === state.selectedCard
+          ? state.myPokemon[1]
+          : state.myPokemon[0];
+      dispatch({ type: "SET_SELECTED_CARD", payload: newSelectedCard });
+    }
   };
   const getComRandomAttackType = () => {
     const attackTypes = [
@@ -100,8 +179,8 @@ export const Game = () => {
     ];
     const availableAttackTypes = attackTypes.filter((type) => {
       if (
-        (type === "special-attack" && disableSpecialComAttack) ||
-        (type === "special-defense" && disableSpecialComDefense)
+        (type === "special-attack" && state.disableSpecialComAttack) ||
+        (type === "special-defense" && state.disableSpecialComDefense)
       ) {
         return false;
       }
@@ -112,76 +191,54 @@ export const Game = () => {
     const selectedAttackType = availableAttackTypes[randomIndex];
 
     if (selectedAttackType === "special-attack") {
-      setDisableSpecialComAttack(true);
+      dispatch({ type: "DISABLE_SPECIAL_COM_ATTACK" });
     } else if (selectedAttackType === "special-defense") {
-      setDisableSpecialComDefense(true);
+      dispatch({ type: "DISABLE_SPECIAL_COM_DEFENSE" });
     }
     return selectedAttackType;
   };
 
-  // const checkPokemonHp = (pokemon) =>{
-  //   const hp = pokemon.stats.find(
-  //     (stat) => stat.stat.name === "hp"
-  //   ).base_stat;
-  //   setMyHp(hp);
-  //   if(hp<=0){
-  //     setTurn((prevTurn) => prevTurn + 1);
-  //   }
-
-  // }
   const settingHp = () => {
-    const comPokemonHP = comPokemon[0].stats.find(
+    const comPokemonHP = state.comPokemon[0].stats.find(
       (stat) => stat.stat.name === "hp"
     ).base_stat;
-    setComHp(comPokemonHP);
-    const myPokemonHP = selectedCard.stats.find(
+    dispatch({ type: "SET_COM_HP", payload: comPokemonHP });
+    const myPokemonHP = state.selectedCard.stats.find(
       (stat) => stat.stat.name === "hp"
     ).base_stat;
-    setMyHp(myPokemonHP);
+    dispatch({ type: "SET_MY_HP", payload: myPokemonHP });
   };
 
   const handleAttack = (attackType) => {
-    if (selectedCard) {
+    if (state.selectedCard) {
       //hp
       //스피드
       let damage = 0;
 
-      const comPokemonSpeed = comPokemon[0].stats.find(
+      const comPokemonSpeed = state.comPokemon[0].stats.find(
         (stat) => stat.stat.name === "speed"
       ).base_stat;
-      const myPokemonSpeed = selectedCard.stats.find(
+      const myPokemonSpeed = state.selectedCard.stats.find(
         (stat) => stat.stat.name === "speed"
       ).base_stat;
       //회피 확률 - 양수 : 내가 회피 / 음수 : 컴터가 회피
       let speedDifference = myPokemonSpeed - comPokemonSpeed;
 
       //컴퓨터 스탯
-
       const comAttackType = getComRandomAttackType();
       console.log(comAttackType);
-      const comPokemonType = comPokemon[0].stats.find(
+      const comPokemonType = state.comPokemon[0].stats.find(
         (stat) => stat.stat.name === comAttackType
       ).base_stat;
       console.log(comPokemonType);
-      // const comPokemonDefense = selectedComCard.stats.find(
-      //   (stat) => stat.stat.name === "defense"
-      // ).base_stat;
-
-      // const comPokemonSpecialAttack = selectedComCard.stats.find(
-      //   (stat) => stat.stat.name === "special-attack"
-      // ).base_stat;
-
-      // const comPokemonSpecialDefense = selectedComCard.stats.find(
-      //   (stat) => stat.stat.name === "special-defense"
-      // ).base_stat;
-      const myPokemonType = selectedCard.stats.find(
+      const myPokemonType = state.selectedCard.stats.find(
         (stat) => stat.stat.name === attackType
       ).base_stat;
 
       console.log(myPokemonType);
 
-      setComAttackType(comAttackType);
-      setSelectedAttackType(attackType);
+      dispatch({ type: "SET_COM_ATTACK_TYPE", payload: comAttackType });
+      dispatch({ type: "SET_MY_ATTACK_TYPE", payload: attackType });
 
       //데미지 계산
       if (comPokemonType > myPokemonType) {
@@ -191,12 +248,12 @@ export const Game = () => {
           speedDifference > 0 &&
           Math.random() * 100 < speedDifference
         ) {
-          console.log("회피")
+          console.log("회피");
           return;
         } else {
           damage = comPokemonType - myPokemonType;
         }
-        setMyHp((prev) => prev - damage);
+        dispatch({ type: "SET_MY_HP", payload: state.myHp - damage });
       } else if (myPokemonType > comPokemonType) {
         if (comPokemonType === "defense" && myPokemonType === "defense") {
           return;
@@ -204,63 +261,32 @@ export const Game = () => {
           speedDifference < 0 &&
           Math.random() * 100 < Math.abs(speedDifference)
         ) {
-          console.log("회피1")
+          console.log("회피1");
           return;
         } else {
           damage = myPokemonType - comPokemonType;
         }
-        setComHp((prev) => prev - damage);
+        dispatch({ type: "SET_COM_HP", payload: state.comHp - damage });
       }
     }
   };
 
-  const ComputeDamage = () =>{
-
-
-
-    
-  }
-
-  // const handleAttack1 = () => {
-  //   setSelectedAttackType("attack");
-  //   handleAttack();
-  // };
-  // const handleDefense = () => {
-  //   setSelectedAttackType("defense");
-  //   handleAttack();
-  // };
-
-  // const handleSpecialAttack = () => {
-  //   if (!disableSpecialMyAttack) {
-  //     setSelectedAttackType("special-attack");
-  //     handleAttack();
-  //   }
-  // };
-
-  // const handleSpecialDefense = () => {
-  //   if (!disableSpecialMyDefense) {
-  //     // 특수 방어가 사용 가능한 경우에만 실행
-  //     setSelectedAttackType("special-defense");
-  //     handleAttack();
-  //   }
-  // };
-
   return (
     <IngamePage>
-      <TurnCount>Turn {turn}</TurnCount>
+      <TurnCount>{state.text}</TurnCount>
 
       <Modal
         className="modal"
         title="첫 출전할 포켓몬을 고르세요."
-        open={isModalVisible}
+        open={state.isModalVisible}
         centered="True"
         footer={[
           <Button
             key="submit"
             type="primary"
             onClick={() => {
-              if (selectedCard) {
-                handleOk();
+              if (state.selectedCard) {
+                dispatch({ type: "HIDE_MODAL", payload: false });
               }
             }}
           >
@@ -270,12 +296,14 @@ export const Game = () => {
         closable={false}
       >
         <ModalPokemonContainer>
-          {myPokemon &&
-            myPokemon.map((el) => (
+          {state.myPokemon &&
+            state.myPokemon.map((el) => (
               <BigCards
                 pokemon={el}
-                onClick={() => setSelectedCard(el)}
-                selected={selectedCard === el}
+                onClick={() =>
+                  dispatch({ type: "SET_SELECTED_CARD", payload: el })
+                }
+                selected={state.selectedCard === el}
               />
             ))}
         </ModalPokemonContainer>
@@ -284,7 +312,7 @@ export const Game = () => {
       <Modal
         className="modal"
         title="Stats"
-        open={selectedPokemon != null}
+        open={state.selectedPokemon != null}
         centered="True"
         footer={[
           <Button key="submit" type="primary" onClick={handleOk}>
@@ -293,15 +321,15 @@ export const Game = () => {
         ]}
         onCancel={handleOk}
       >
-        {selectedPokemon && <BigCards pokemon={selectedPokemon} />}
+        {state.selectedPokemon && <BigCards pokemon={state.selectedPokemon} />}
       </Modal>
 
       <Hand>
         <div>
           <OwnerName>Com</OwnerName>
           <HandCards>
-            {comPokemon &&
-              comPokemon.map((el) => (
+            {state.comPokemon &&
+              state.comPokemon.map((el) => (
                 <SettedCards pokemon={el} onClick={() => clickedHandCard(el)} />
               ))}
           </HandCards>
@@ -309,58 +337,59 @@ export const Game = () => {
         <div>
           <OwnerName>Me</OwnerName>
           <HandCards>
-            {myPokemon &&
-              myPokemon.map((el) => (
+            {state.myPokemon &&
+              state.myPokemon.map((el) => (
                 <SettedCards pokemon={el} onClick={() => clickedHandCard(el)} />
               ))}
           </HandCards>
         </div>
       </Hand>
       <FightingZone>
-        {comPokemon.length > 0 && (
-          <FightingPokemon pokemon={comPokemon[0]} flip={true} />
+        {state.comPokemon.length > 0 && (
+          <FightingPokemon pokemon={state.comPokemon[0]} flip={true} />
         )}
-        {selectedCard && (
-          <FightingPokemon pokemon={selectedCard} flip={false} />
+        {state.selectedCard && (
+          <FightingPokemon pokemon={state.selectedCard} flip={false} />
         )}
-        <Button
-          onClick={() => {
-            handleAttack("attack");
-          }}
-        >
-          공격
-        </Button>
-        <Button
-          onClick={() => {
-            handleAttack("defense");
-          }}
-        >
-          방어
-        </Button>
-        <Button
-          onClick={() => {
-            handleAttack("special-attack");
-          }}
-        >
-          특수공격
-        </Button>
-        <Button
-          onClick={() => {
-            handleAttack("special-defense");
-          }}
-        >
-          특수방어
-        </Button>
+        {state.buttonVisible === true && (
+          <div>
+            {" "}
+            <Button
+              onClick={() => {
+                handleAttack("attack");
+              }}
+            >
+              공격
+            </Button>
+            <Button
+              onClick={() => {
+                handleAttack("defense");
+              }}
+            >
+              방어
+            </Button>
+            <Button
+              onClick={() => {
+                handleAttack("special-attack");
+              }}
+            >
+              특수공격
+            </Button>
+            <Button
+              onClick={() => {
+                handleAttack("special-defense");
+              }}
+            >
+              특수방어
+            </Button>
+          </div>
+        )}
       </FightingZone>
-      <div>my hp : {myHp}</div>
-      <div>my attacktype : {selectedAttackType} </div>
-      <div>com hp : {comHp}</div>
-      <div>com attacktype : {comAttackType}</div>
+      <div>my hp : {state.myHp}</div>
+      <div>my attacktype : {state.MyAttackType} </div>
+      <div>com hp : {state.comHp}</div>
+      <div>com attacktype : {state.comAttackType}</div>
+      <div>{state.count}</div>
     </IngamePage>
   );
 };
-
-// onClickAttack={()=>{handleAttack("attack")}}
-// onClickDefense={()=>{handleAttack("defense")}}
-// onClickSpecialAttack={()=>{handleAttack("special-attack")}}
-// onClickSpecialDefense={()=>{handleAttack("special-defense")}}
