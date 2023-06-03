@@ -1,5 +1,5 @@
 import {React, useState} from 'react'
-import {Progress, Result} from 'antd';
+import {Progress, Card, Result} from 'antd';
 import './MBTI.css';
 import axios from "axios";
 
@@ -136,15 +136,16 @@ const TestPage = ({idx,setIdx}) =>{
         }}>{query[i][j].answer2[0]}</button>
         <Progress
             percent={((idx+1) / (query.length*3))*100}
+            style={{marginTop:'20px'}}
             strokeColor={{
-                '0%': '#108ee9',
-                '100%': '#87d068',
+                '0%': 'rgb(254, 254, 207)',
+                '100%': '#108ee9',
             }}
             showInfo={false}
         />
         <div>{idx+1} / {query.length*3}</div>
         <br></br>
-        <button onClick={()=>{
+        <button className="mbtiTestGobackButton" onClick={()=>{
             if(idx>0){setIdx(idx-1)}
             }}>뒤로</button>
     </div>
@@ -154,11 +155,11 @@ const TestPage = ({idx,setIdx}) =>{
 const MBTI = () => {
     const [index, setIndex] = useState(0);
     const [start, setStart] = useState(false);
-    const [mypokemonURL, setMypokemonURL] = useState("");
+    const [mypokemonURL, setMypokemonURL] = useState("https://lh3.googleusercontent.com/3TSaKxXGo2wT0lu0AyNUBnkk6wkCC2AzOhJyy3JXIPm-AmZ1k9DSAroWeBUyePswCZSs5lVp3mPF7HzUpY9VPlyOV5eddITONINr3WSqLNLm=e365-w512");
     let resultMBTI="";
 
     const FirstPage = ()=>{
-        return <div className='testpage' style={{backgroundColor: "#ccc"}}><button className="teststart" onClick={()=>{
+        return <div className='testpage' style={{backgroundColor: "white"}}><button className="teststart" onClick={()=>{
             setStart(true);
         }}>start</button></div>
     }
@@ -166,22 +167,22 @@ const MBTI = () => {
     const ResultPage = ()=>{
         if(mbti[0] > 0){
             if(mbti[1] > 0){
-                if(mbti[2] > 0){resultMBTI = (mbti[3] > 0)? "ESFP-158" : "ESFJ-258"}
-                else{resultMBTI = (mbti[3] > 0)? "ESTP-390" : "ESTJ-7"}
+                if(mbti[2] > 0){resultMBTI = (mbti[3] > 0)? "ESFP-158-리아코" : "ESFJ-258-물짱이"}
+                else{resultMBTI = (mbti[3] > 0)? "ESTP-390-불꽃숭이" : "ESTJ-7-꼬부기"}
             }
             else{
-                if(mbti[2] > 0){resultMBTI = (mbti[3] > 0)? "ENFP-255" : "ENFJ-25"}
-                else{resultMBTI = (mbti[3] > 0)? "ENTP-252" : "ENTJ-4"}
+                if(mbti[2] > 0){resultMBTI = (mbti[3] > 0)? "ENFP-255-아차모" : "ENFJ-25-피카츄"}
+                else{resultMBTI = (mbti[3] > 0)? "ENTP-252-나무지기" : "ENTJ-4-파이리"}
             }
         }
         else{
             if(mbti[1] > 0){
-                if(mbti[2] > 0){resultMBTI = (mbti[3] > 0)? "ISFP-393" : "ISFJ-447"}
-                else{resultMBTI = (mbti[3] > 0)? "ISTP-1" : "ISTJ-387"}
+                if(mbti[2] > 0){resultMBTI = (mbti[3] > 0)? "ISFP-393-펭도리" : "ISFJ-447-리오르"}
+                else{resultMBTI = (mbti[3] > 0)? "ISTP-1-이상해씨" : "ISTJ-387-모부기"}
             }
             else{
-                if(mbti[2] > 0){resultMBTI = (mbti[3] > 0)? "INFP-280" : "INFJ-152"}
-                else{resultMBTI = (mbti[3] > 0)? "INTP-155" : "INTJ-228"}
+                if(mbti[2] > 0){resultMBTI = (mbti[3] > 0)? "INFP-280-랄토스" : "INFJ-152-치코리타"}
+                else{resultMBTI = (mbti[3] > 0)? "INTP-155-브케인" : "INTJ-228-델빌"}
             }
 
         }
@@ -189,12 +190,35 @@ const MBTI = () => {
         const response = axios.get(
             `https://pokeapi.co/api/v2/pokemon/${pokemonInfo[1]}`
         );
-        response.then(result=>setMypokemonURL(result.data.sprites.front_default))
+        response.then(result=>setTimeout(() => {
+            setMypokemonURL(result.data.sprites.front_default)
+        }, 300));
+            
 
+        const { Meta } = Card;
         return (
-            <div className='testpage'>
-                <img src={mypokemonURL} width={300} height={300} />
-                <h3>{pokemonInfo[0]}</h3>
+            <div>
+
+                {/* <img src={mypokemonURL} width={300} height={300} /> */}
+                {/* <h3>{pokemonInfo[0]}</h3> */}
+
+                <Card className='mbtiResultCard'
+                    hoverable
+                    style={{
+                    width: 240,
+                    marginTop: 150,
+                    marginBottom: 10,
+                    }}
+                    cover={<img alt="example" src={mypokemonURL} width={400} height={300} />}
+                >
+                    <h1 style={{margin:0}}>{pokemonInfo[0]}</h1>
+                    <a href='https://pokemon.fandom.com/wiki/Pok%C3%A9mon_Wiki'><h3>{pokemonInfo[2]}</h3></a>
+                    {/* <Meta title="" description="https://pokemon.fandom.com/wiki/Pok%C3%A9mon_Wiki" /> */}
+                    
+                </Card>
+
+
+
             </div>
             
         )
