@@ -217,6 +217,8 @@ const MBTI = () => {
                             width: 240,
                             marginTop: 150,
                             marginBottom: 10,
+                            backgroundColor:'white',
+                            border: 1 ,
                             }}
                     >
                         
