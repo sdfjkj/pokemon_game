@@ -1,8 +1,9 @@
 import {React, useState} from 'react'
-import {Progress, Card, Result} from 'antd';
+import {Progress, Card, Spin,Result, AutoComplete} from 'antd';
+import { LoadingOutlined } from '@ant-design/icons';
 import './MBTI.css';
 import axios from "axios";
-
+import pokenmon_ball from './pokenmon_ball.png';
                 // ISTJ : 387 //1
                 // ISFJ : 447 //2
                 // INFJ :3
@@ -155,7 +156,7 @@ const TestPage = ({idx,setIdx}) =>{
 const MBTI = () => {
     const [index, setIndex] = useState(0);
     const [start, setStart] = useState(false);
-    const [mypokemonURL, setMypokemonURL] = useState("https://lh3.googleusercontent.com/3TSaKxXGo2wT0lu0AyNUBnkk6wkCC2AzOhJyy3JXIPm-AmZ1k9DSAroWeBUyePswCZSs5lVp3mPF7HzUpY9VPlyOV5eddITONINr3WSqLNLm=e365-w512");
+    const [mypokemonURL, setMypokemonURL] = useState("");
     let resultMBTI="";
 
     const FirstPage = ()=>{
@@ -194,29 +195,62 @@ const MBTI = () => {
             setMypokemonURL(result.data.sprites.front_default)
         }, 300));
             
-
+        const antIcon = (
+            <LoadingOutlined
+                style={{
+                    fontSize: 24,
+                }}
+                spin
+                />
+            );
         const { Meta } = Card;
         return (
             <div>
-
                 {/* <img src={mypokemonURL} width={300} height={300} /> */}
                 {/* <h3>{pokemonInfo[0]}</h3> */}
-
-                <Card className='mbtiResultCard'
-                    hoverable
-                    style={{
-                    width: 240,
-                    marginTop: 150,
-                    marginBottom: 10,
-                    }}
-                    cover={<img alt="example" src={mypokemonURL} width={400} height={300} />}
-                >
-                    <h1 style={{margin:0}}>{pokemonInfo[0]}</h1>
-                    <a href='https://pokemon.fandom.com/wiki/Pok%C3%A9mon_Wiki'><h3>{pokemonInfo[2]}</h3></a>
-                    {/* <Meta title="" description="https://pokemon.fandom.com/wiki/Pok%C3%A9mon_Wiki" /> */}
-                    
-                </Card>
-
+            <div className='flip'>
+                <div className='card'>
+                    <div className="front">
+                    <Card className='mbtiResultCard'
+                            hoverable
+                            style={{
+                            width: 240,
+                            marginTop: 150,
+                            marginBottom: 10,
+                            backgroundColor:'rgba(16, 176, 239, 0.31)',
+                            }}
+                    >
+                        
+                        <div>
+                            
+                            <div className='pokemon_ball'>
+                                <div className='shadow'></div>
+                                <img alt="example" src={pokenmon_ball} width={100} height={100}/>
+                            </div>
+                        </div>
+                        <div style={{margin: 50}}>hover</div>
+                        </Card>
+                    </div>
+                    <div className="back">
+                        <Card className='mbtiResultCard'
+                            hoverable
+                            style={{
+                            width: 240,
+                            marginTop: 150,
+                            marginBottom: 10,
+                            }}
+                            cover={<img alt="example" src={mypokemonURL} width={400} height={300} />}
+                        >
+                            <div className='mbtiResultCardText'>
+                                <h1 style={{margin:0}}>{pokemonInfo[0]}</h1>
+                                <a href='https://pokemon.fandom.com/wiki/Pok%C3%A9mon_Wiki'><h3>{pokemonInfo[2]}</h3></a>
+                                <a href =''><h4>{pokemonInfo[0]}에 대해 더 알고 싶다면?</h4></a>
+                                {/* <Meta title="" description="https://pokemon.fandom.com/wiki/Pok%C3%A9mon_Wiki" /> */}
+                            </div>
+                        </Card>
+                    </div>
+                </div>
+            </div>
 
 
             </div>
