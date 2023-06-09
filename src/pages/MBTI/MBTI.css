@@ -9,16 +9,67 @@
     padding-top:100px ;
 }
 .teststart{
-    height: 30px;
-    width: 100px;
-    margin:0 auto;
     position: absolute;
     bottom: 0;
     left: 50%;
     transform: translate(-50%,-50%);
+
+    background-color: rgb(24, 24, 159);
+    width: 190px;
+    text-align: center;
+    color: yellow;
+    font-size: 32px;
+    border-radius: 20px;
+    padding: 10px 20px;
+    text-decoration: none;
+    font-weight: bold;
+    font-style: italic;
+    border-bottom: 1px solid rgb(112, 112, 112);
+    box-shadow: 0px 10px 15px 0px rgba(0, 0, 0, 0.4);
 }
 .selectButton{
-    width: 100px;
+    width: 300px;
     height: 80px;
-    margin: 0 auto;
+    margin: 5px auto;
+    background-color:aliceblue;
+    border: none;
+    box-shadow: 0px 10px 15px 0px rgba(0, 0, 0, 0.2);
+    border-radius: 3%;
+}
+.selectButton:hover{
+    background-color:rgb(254, 254, 207);
+}
+.mbtiTestGobackButton{
+    width: 50px;
+    height: 50px;
+    background-color: white;
+    border:0.5px solid rgb(255, 231, 231);
+    border-radius: 10%;
+    box-shadow: 0px 10px 15px 0px rgb(255, 231, 231,0.05);
+}
+.mbtiTestGobackButton:hover{
+    background-color: rgb(255, 231, 231);
+}
+/* .mbtiResultPage{
+    background-color: #ccc;
+    height: 400px;
+    width: 300px;
+    margin:0 auto;
+    position: relative;
+    margin-top: 130px;
+    text-align: center;
+    padding-top:100px ;
+} */
+.mbtiResultCard{
+    height: 450px;
+    margin:0 auto;
+    position: relative;
+    margin-top: 100px;
+    text-align: center;
+    /* padding-top:100px ; */
+    background-color: rgb(189, 197, 255,0.2);
+}
+
+a {
+    text-decoration: none;
 }
