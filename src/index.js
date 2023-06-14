@@ -11,6 +11,7 @@ import { Proposal } from "./pages/proposal/proposal";
 import { AboutUs } from "./pages/aboutUs/aboutUs";
 import MBTI from "./pages/MBTI/MBTI";
 import Error from "./pages/404Error/404Error";
+import CharacterGame from "./pages/CharacterGame/CharacterGame";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
@@ -29,6 +30,7 @@ function App() {
         <Route exact path="/Proposal" element={<Proposal />} />
         <Route exact path="/About_Us" element={<AboutUs />} />
         <Route exact path="/MBTI" element={<MBTI />}  />
+        <Route exact path="/PokeGame" element={<CharacterGame/>}/>
         <Route path='*' element={<Error />}  />
       </Routes>
       <Footer />

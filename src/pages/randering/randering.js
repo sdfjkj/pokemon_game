@@ -12,6 +12,7 @@ export const Randering = () => {
         <StyledLink to="/main">Poke Wiki</StyledLink>
         <StyledLink to="/Card_Game">Card Game</StyledLink>
         <StyledLink to="/MBTI">Poke MBTI</StyledLink>
+        <StyledLink to="/PokeGame">PokeGame</StyledLink>
       </ButtonContainer>
     </RanderingPage>
   );

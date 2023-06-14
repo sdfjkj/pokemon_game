@@ -44,10 +44,12 @@ export const Zenigame = styled.img`
 
 export const StyledLink = styled(Link)`
   background-color: rgb(24, 24, 159);
-  width: 190px;
+  width: 150px;height :63px;
+  margin-right : 11px;
   text-align: center;
+  line-height : 60px;
   color: yellow;
-  font-size: 32px;
+  font-size: 28px;
   border-radius: 20px;
   padding: 10px 20px;
   text-decoration: none;
