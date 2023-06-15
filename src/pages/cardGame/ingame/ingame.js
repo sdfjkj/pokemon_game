@@ -7,23 +7,39 @@ import {
   FightingPokemon,
 } from "../../../components/cards/cards";
 
+// Typography from antd
+
+// overflow:hidden
+// object-fit:cover
+
 import { Button, Modal } from "antd";
 import {
   IngamePage,
+  IngameContainer,
+  FightingZoneContainer,
+  FightingZoneContainerContainer,
+  HandContainer,
+  LabelText,
+  NormalText,
   TurnCount,
   ModalPokemonContainer,
+  ScoreContainer,
   Hand,
   FightingZone,
   HandCards,
   OwnerName,
+  MyZone,
+  ButtonContainer,
 } from "./styled.js";
 
 const initialState = {
-  myPokemon: [],
+  stage: 0,
   turn: 0,
+  myPokemon: [],
   selectedPokemon: null,
   comPokemon: [],
   selectedCard: null,
+  selectedComCard: null,
   isModalVisible: true,
   text: "Let's Win !!",
   myHp: 0,
@@ -34,20 +50,27 @@ const initialState = {
   disableSpecialComAttack: false,
   disableSpecialComDefense: false,
   buttonVisible: false,
+  myScore: 0,
+  comScore: 0,
+  moveModal: false,
 };
 
 const gameReducer = (state, action) => {
   switch (action.type) {
+    case "SET_STAGE":
+      return { ...state, stage: action.payload };
+    case "SET_TURN":
+      return { ...state, turn: action.payload };
     case "SET_MY_POKEMON":
       return { ...state, myPokemon: action.payload };
-    case "SET_TURN":
-      return { ...state, turn: state.turn + 1 };
     case "SET_SELECTED_POKEMON":
       return { ...state, selectedPokemon: action.payload };
     case "SET_COM_POKEMON":
       return { ...state, comPokemon: action.payload };
     case "SET_SELECTED_CARD":
       return { ...state, selectedCard: action.payload };
+    case "SET_SELECTED_COM_CARD":
+      return { ...state, selectedComCard: action.payload };
     case "SHOW_MODAL":
       return { ...state, isModalVisible: true };
     case "HIDE_MODAL":
@@ -74,6 +97,12 @@ const gameReducer = (state, action) => {
       return { ...state, buttonVisible: true };
     case "HIDE_TYPE_BUTTON":
       return { ...state, buttonVisible: false };
+    case "SET_MY_SCORE":
+      return { ...state, myScore: action.payload };
+    case "SET_COM_SCORE":
+      return { ...state, comScore: action.payload };
+    case "SET_MOVE_MODAL":
+      return { ...state, moveModal: action.payload };
     default:
       throw new Error();
   }
@@ -96,6 +125,8 @@ export const Game = () => {
   useEffect(() => {
     if (state.comPokemon.length > 0 && state.isModalVisible === false) {
       settingHp();
+      dispatch({ type: "SET_TURN", payload: 1 });
+      dispatch({ type: "SET_STAGE", payload: state.stage + 1 });
     }
   }, [state.isModalVisible, state.selectedCard]);
 
@@ -106,6 +137,9 @@ export const Game = () => {
   useEffect(() => {
     dispatch({ type: "HIDE_TYPE_BUTTON" });
     if (state.isModalVisible === false) {
+      //hp 체크
+      checkPokemonHp();
+
       const timer = setInterval(() => {
         if (stateRef.current.count > 0) {
           dispatch({ type: "decreaseCount" });
@@ -122,8 +156,26 @@ export const Game = () => {
     }
   }, [state.myHp, state.comHp]);
 
+  useEffect(() => {
+    if (state.comPokemon.length > 0 && state.isModalVisible === false) {
+      if (state.myScore === 2 || state.comScore === 2) {
+        console.log("love");
+      } else {
+        dispatch({
+          type: "SET_SELECTED_COM_CARD",
+          payload: state.comPokemon[state.stage],
+        });
+        const newSelectedCard =
+          state.myPokemon[0] === state.selectedCard
+            ? state.myPokemon[1]
+            : state.myPokemon[0];
+        dispatch({ type: "SET_SELECTED_CARD", payload: newSelectedCard });
+      }
+    }
+  }, [state.myScore, state.comScore]);
+
   const afterCountdown = () => {
-    dispatch({ type: "SET_TURN" });
+    dispatch({ type: "SET_TURN", payload: state.turn + 1 });
     dispatch({ type: "SHOW_TYPE_BUTTON" });
     dispatch({ type: "SET_TEXT", payload: `Turn ${state.turn}` });
     dispatch({ type: "resetCount" });
@@ -135,14 +187,14 @@ export const Game = () => {
 
   const game_setting = () => {
     const newNumbersSet = new Set();
-    while (newNumbersSet.size < 2) {
+    while (newNumbersSet.size < 3) {
       newNumbersSet.add(generateRandomNumber());
     }
     const newNumbers = [...newNumbersSet];
 
     async function fetchPokemonData() {
       const newPokemon = [];
-      for (let i = 0; i < 2; i++) {
+      for (let i = 0; i < 3; i++) {
         const response = await axios.get(
           `https://pokeapi.co/api/v2/pokemon/${newNumbers[i]}`
         );
@@ -150,10 +202,12 @@ export const Game = () => {
       }
 
       dispatch({ type: "SET_COM_POKEMON", payload: newPokemon });
+      dispatch({ type: "SET_SELECTED_COM_CARD", payload: newPokemon[0] });
     }
     fetchPokemonData();
   };
 
+  //모달 열고 닫기
   const handleOk = () => {
     dispatch({ type: "SET_SELECTED_POKEMON", payload: null });
   };
@@ -161,15 +215,25 @@ export const Game = () => {
   const clickedHandCard = (p) => {
     dispatch({ type: "SET_SELECTED_POKEMON", payload: p });
   };
+
+  //hp 확인
   const checkPokemonHp = () => {
     if (state.myHp <= 0 || state.comHp <= 0) {
-      const newSelectedCard =
-        state.myPokemon[0] === state.selectedCard
-          ? state.myPokemon[1]
-          : state.myPokemon[0];
-      dispatch({ type: "SET_SELECTED_CARD", payload: newSelectedCard });
+      if (state.myHp <= 0) {
+        dispatch({ type: "SET_COM_SCORE", payload: state.comScore + 1 });
+      } else {
+        dispatch({ type: "SET_MY_SCORE", payload: state.myScore + 1 });
+      }
+      // dispatch({ type: "SET_SELECTED_COM_CARD", payload: state.comPokemon[1]});
+      // const newSelectedCard =
+      //   state.myPokemon[0] === state.selectedCard
+      //     ? state.myPokemon[1]
+      //     : state.myPokemon[0];
+      // dispatch({ type: "SET_SELECTED_CARD", payload: newSelectedCard });
     }
   };
+
+  //컴퓨터 공격타입
   const getComRandomAttackType = () => {
     const attackTypes = [
       "attack",
@@ -198,8 +262,9 @@ export const Game = () => {
     return selectedAttackType;
   };
 
+  //hp 세팅
   const settingHp = () => {
-    const comPokemonHP = state.comPokemon[0].stats.find(
+    const comPokemonHP = state.selectedComCard.stats.find(
       (stat) => stat.stat.name === "hp"
     ).base_stat;
     dispatch({ type: "SET_COM_HP", payload: comPokemonHP });
@@ -209,13 +274,14 @@ export const Game = () => {
     dispatch({ type: "SET_MY_HP", payload: myPokemonHP });
   };
 
+  //공격타입 및 전투 및 데미지 계산
   const handleAttack = (attackType) => {
     if (state.selectedCard) {
       //hp
       //스피드
       let damage = 0;
 
-      const comPokemonSpeed = state.comPokemon[0].stats.find(
+      const comPokemonSpeed = state.selectedComCard.stats.find(
         (stat) => stat.stat.name === "speed"
       ).base_stat;
       const myPokemonSpeed = state.selectedCard.stats.find(
@@ -227,7 +293,7 @@ export const Game = () => {
       //컴퓨터 스탯
       const comAttackType = getComRandomAttackType();
       console.log(comAttackType);
-      const comPokemonType = state.comPokemon[0].stats.find(
+      const comPokemonType = state.selectedComCard.stats.find(
         (stat) => stat.stat.name === comAttackType
       ).base_stat;
       console.log(comPokemonType);
@@ -243,12 +309,14 @@ export const Game = () => {
       //데미지 계산
       if (comPokemonType > myPokemonType) {
         if (comPokemonType === "defense" && myPokemonType === "defense") {
+          dispatch({ type: "SET_MY_HP", payload: state.myHp + 1 });
           return;
         } else if (
           speedDifference > 0 &&
           Math.random() * 100 < speedDifference
         ) {
           console.log("회피");
+          dispatch({ type: "SET_MY_HP", payload: state.myHp + 1 });
           return;
         } else {
           damage = comPokemonType - myPokemonType;
@@ -256,12 +324,14 @@ export const Game = () => {
         dispatch({ type: "SET_MY_HP", payload: state.myHp - damage });
       } else if (myPokemonType > comPokemonType) {
         if (comPokemonType === "defense" && myPokemonType === "defense") {
+          dispatch({ type: "SET_MY_HP", payload: state.myHp + 1 });
           return;
         } else if (
           speedDifference < 0 &&
           Math.random() * 100 < Math.abs(speedDifference)
         ) {
           console.log("회피1");
+          dispatch({ type: "SET_COM_HP", payload: state.comHp + 1 });
           return;
         } else {
           damage = myPokemonType - comPokemonType;
@@ -273,8 +343,6 @@ export const Game = () => {
 
   return (
     <IngamePage>
-      <TurnCount>{state.text}</TurnCount>
-
       <Modal
         className="modal"
         title="첫 출전할 포켓몬을 고르세요."
@@ -323,68 +391,84 @@ export const Game = () => {
       >
         {state.selectedPokemon && <BigCards pokemon={state.selectedPokemon} />}
       </Modal>
-
-      <Hand>
-        <div>
-          <OwnerName>Com</OwnerName>
+      <ScoreContainer>
+        <LabelText>Score</LabelText>
+        <NormalText>
+          {state.comScore} | {state.myScore}
+        </NormalText>
+      </ScoreContainer>
+      <IngameContainer>
+        <HandContainer>
+          <OwnerName>Computer</OwnerName>
           <HandCards>
             {state.comPokemon &&
               state.comPokemon.map((el) => (
                 <SettedCards pokemon={el} onClick={() => clickedHandCard(el)} />
               ))}
           </HandCards>
-        </div>
-        <div>
+        </HandContainer>
+        <FightingZoneContainerContainer>
+          <FightingZoneContainer>
+            <TurnCount>Stage{state.stage}</TurnCount>
+
+            <FightingZone>
+              {state.comPokemon.length > 0 && (
+                <FightingPokemon pokemon={state.selectedComCard} flip={true} />
+              )}
+
+              {state.selectedCard && (
+                <FightingPokemon pokemon={state.selectedCard} flip={false} />
+              )}
+            </FightingZone>
+          </FightingZoneContainer>
+          {state.buttonVisible === true && (
+            <ButtonContainer>
+              <Button
+                onClick={() => {
+                  handleAttack("attack");
+                }}
+              >
+                공격
+              </Button>
+              <Button
+                onClick={() => {
+                  handleAttack("defense");
+                }}
+              >
+                방어
+              </Button>
+              <Button
+                onClick={() => {
+                  handleAttack("special-attack");
+                }}
+              >
+                특수공격
+              </Button>
+              <Button
+                onClick={() => {
+                  handleAttack("special-defense");
+                }}
+              >
+                특수방어
+              </Button>
+            </ButtonContainer>
+          )}
+        </FightingZoneContainerContainer>
+        <HandContainer>
           <OwnerName>Me</OwnerName>
           <HandCards>
             {state.myPokemon &&
               state.myPokemon.map((el) => (
-                <SettedCards pokemon={el} onClick={() => clickedHandCard(el)} />
+                <SettedCards
+                  pokemon={el}
+                  onClick={() => clickedHandCard(el)}
+                  ifSelected={state.selectedCard}
+                />
               ))}
           </HandCards>
-        </div>
-      </Hand>
-      <FightingZone>
-        {state.comPokemon.length > 0 && (
-          <FightingPokemon pokemon={state.comPokemon[0]} flip={true} />
-        )}
-        {state.selectedCard && (
-          <FightingPokemon pokemon={state.selectedCard} flip={false} />
-        )}
-        {state.buttonVisible === true && (
-          <div>
-            {" "}
-            <Button
-              onClick={() => {
-                handleAttack("attack");
-              }}
-            >
-              공격
-            </Button>
-            <Button
-              onClick={() => {
-                handleAttack("defense");
-              }}
-            >
-              방어
-            </Button>
-            <Button
-              onClick={() => {
-                handleAttack("special-attack");
-              }}
-            >
-              특수공격
-            </Button>
-            <Button
-              onClick={() => {
-                handleAttack("special-defense");
-              }}
-            >
-              특수방어
-            </Button>
-          </div>
-        )}
-      </FightingZone>
+        </HandContainer>
+      </IngameContainer>
+
       <div>my hp : {state.myHp}</div>
       <div>my attacktype : {state.MyAttackType} </div>
       <div>com hp : {state.comHp}</div>
