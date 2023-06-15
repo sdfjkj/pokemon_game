@@ -1,58 +1,37 @@
-
-import styled from "styled-components";
-import { Link } from "react-router-dom";
+import styled, { keyframes, css  } from "styled-components";
 
 export const RanderingPage = styled.div`
-  margin-top: 150px;
-  width: 1020px;
-  height: 600px;
-  position: relative;
-  background-color: rgba(255, 255, 255, 0.5);
+  margin-top: 100px;
+  width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-
-  &::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-image: url(https://www.arealme.com/cover-images/which-pokemon-should-i-use.png);
-    background-size: cover;
-    opacity: 0.5;
-  }
 `;
 
-export const ButtonContainer = styled.div`
-  position: relative;
-  top: 10px;
-  display: flex;
-  justify-content: space-around;
-  width: 800px;
+export const Banner = styled.div`
+  margin-top: 10px;
+  width: 100%;
+  height: 500px;
+  background-image: url(https://camo.githubusercontent.com/90f24316b24433bf0a2778d95ca93ad264093645a71d2eb9f569cdbc34fbfc6d/68747470733a2f2f6372797374616c2d63646e322e6372797374616c636f6d6d657263652e636f6d2f70686f746f732f363333303536352f73706c61736842616e6e65725f706f6b656d6f6e2e6a7067);
+  background-repeat: no-repeat;
+  opacity: 0.4;
+  background-size: cover;
+`;
+
+
+const move = keyframes`
+  0% { transform: translateX(0); }
+  50% { transform: translateX(700px); }
+  100% { transform: translateX(0); }
 `;
 
 export const Zenigame = styled.img`
-  position: relative;
-  bottom: 30px;
-  left: 140px;
-  width: 310px;
+  position: absolute;
+  transform: rotate(-8deg);
+  top: 210px;
+  left: 450px;
+  width: 330px;
   margin: 20px;
-`;
-
-export const StyledLink = styled(Link)`
-  background-color: rgb(24, 24, 159);
-  width: 190px;
-  text-align: center;
-  color: yellow;
-  font-size: 32px;
-  border-radius: 20px;
-  padding: 10px 20px;
-  text-decoration: none;
-  font-weight: bold;
-  font-style: italic;
-  border-bottom: 1px solid rgb(112, 112, 112);
-  box-shadow: 0px 10px 15px 0px rgba(0, 0, 0, 0.4);
+  animation: ${(props) => props.move && css`${move} 15s infinite linear`};
 `;

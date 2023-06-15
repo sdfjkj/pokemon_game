@@ -7,14 +7,14 @@ import { useNavigate } from "react-router-dom";
 export const CardGame = () => {
   const [mypokemon, setMypokemon] = useState([]);
   const [selectedpokemon, setselectedpokemon] = useState([]);
-  const [message, setMessage] = useState("포켓몬을 두 마리 선택하세요.");
+  const [message, setMessage] = useState("포켓몬을 세 마리 선택하세요.");
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (selectedpokemon.length >= 2) {
+    if (selectedpokemon.length >= 3) {
       setMessage("선택 완료");
     } else {
-      setMessage("포켓몬을 두 마리 선택하세요.");
+      setMessage("포켓몬을 세 마리 선택하세요.");
     }
   }, [selectedpokemon]);
 
@@ -31,14 +31,14 @@ export const CardGame = () => {
       setselectedpokemon((prevSelectedPokemon) =>
         prevSelectedPokemon.filter((p) => p.id !== pokemon.id)
       );
-    } else if (selectedpokemon.length < 2) {
+    } else if (selectedpokemon.length < 3) {
       setselectedpokemon((prevSelectedPokemon) => [
         ...prevSelectedPokemon,
         pokemon,
       ]);
     } else {
       setMessage(
-        "이미 두 개를 선택하셨습니다. 선택을 취소하려면 포켓몬을 다시 누르세요."
+        "이미 세 개를 선택하셨습니다. 선택을 취소하려면 포켓몬을 다시 누르세요."
       );
     }
   };
@@ -86,14 +86,14 @@ export const CardGame = () => {
     setMypokemon([]);
 
     const newNumbersSet = new Set();
-    while (newNumbersSet.size < 10) {
+    while (newNumbersSet.size < 8) {
       newNumbersSet.add(generateRandomNumber());
     }
 
     const newNumbers = [...newNumbersSet];
 
     async function fetchPokemonData() {
-      for (let i = 0; i < 10; i++) {
+      for (let i = 0; i < 8; i++) {
         const response = await axios.get(
           `https://pokeapi.co/api/v2/pokemon/${newNumbers[i]}`
         );
@@ -129,12 +129,12 @@ export const CardGame = () => {
             <div className="game_button_container">
               <div
                 onClick={() => {
-                  if (selectedpokemon.length >= 2) {
+                  if (selectedpokemon.length >= 3) {
                     navigate("/Game", { state: { selectedpokemon } });
                   }
                 }}
                 className={
-                  selectedpokemon.length >= 2
+                  selectedpokemon.length >= 3
                     ? "game_start_button"
                     : "disabled_button"
                 }

@@ -78,12 +78,15 @@ export const BigCards = ({ pokemon, onClick, selected }) => {
   );
 };
 
-export const SettedCards = ({ pokemon, onClick }) => {
+export const SettedCards = ({ pokemon, onClick, ifSelected }) => {
   const imgSrc = img_list.find((img) => pokemon.sprites[img] !== null);
+  console.log(pokemon.forms[0].name);
+  if(ifSelected){console.log(ifSelected.forms[0].name);}
+  
   return (
     <div>
       {pokemon && (
-        <SettedPokemonBox onClick={onClick}>
+        <SettedPokemonBox onClick={onClick}  style={ifSelected ? (pokemon.forms[0].name === ifSelected.forms[0].name ? { backgroundColor: "#c3fac4" } : {}) : {}}>
           <PokemonImage src={pokemon.sprites[imgSrc]} alt="pokemon" />
           <ComName>{pokemon.forms[0].name}</ComName>
         </SettedPokemonBox>

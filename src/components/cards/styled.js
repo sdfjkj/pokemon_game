@@ -36,15 +36,17 @@ export const Name = styled.div`
   font-weight: bold;
 `;
 
+
 export const SettedPokemonBox = styled.div`
   border: 1px solid black;
   cursor: pointer;
-  width: 120px;
+  width: 130px;
+  height:160px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-between;
-  height: 130px;
+  justify-content: center;
+  margin-bottom:20px;
 `;
 
 export const ComName = styled.div`
