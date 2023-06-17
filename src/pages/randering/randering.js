@@ -32,6 +32,14 @@ export const Randering = () => {
       src: "https://i.chzbgr.com/full/8525634816/h561129EB/pokemon-memes-raichu-gif",
       route :"/a",
     },
+    {
+      name: "Poke Game",
+      discription: "포켓몬 캐릭터에 대해 알아보세요!",
+      detail1: "ㅁㄴㅇㄹ",
+      detail2: "ㅁㄴㅇㄹ",
+      src: "https://i.chzbgr.com/full/8525634816/h561129EB/pokemon-memes-raichu-gif",
+      route :"/CharacterGame",
+    },
   ];
   const [move, setMove] = useState(true);
   const [message, setMessage] = useState('');
