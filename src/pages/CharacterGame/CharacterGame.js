@@ -1,5 +1,5 @@
 import './CharacterGame.css';
-import {Progress} from 'antd';
+import {Progress, Card} from 'antd';
 import {useEffect, useState} from 'react'
 import axios from "axios";
 import { resolvePath } from 'react-router';
@@ -45,6 +45,12 @@ function CharacterGame() {
         const c = fetch(`https://pokeapi.co/api/v2/pokemon/${randomIdList[2]}`).then(res=>res.json())
         const d = fetch(`https://pokeapi.co/api/v2/pokemon/${randomIdList[3]}`).then(res=>res.json())
 
+        while (randomIdList.length < 4) {
+            var num = parseInt(Math.random() * 1010 + 1);
+            if (randomIdList.indexOf(num) == -1) {
+                randomIdList.push(num);
+            }
+        }
         // 4개의 프로미스 객체가 끝나면 호출되는 Promise.all을 사용
         Promise.all([a,b,c,d]).then(pokemons =>{
             setMypokemon({
@@ -63,10 +69,6 @@ function CharacterGame() {
     }
 
     const TestPage = () =>{
-        const CharacterNumber = [];
-        const [result, setResult] = useState(false);
-        const [style, setStyle] = useState({transform : 'scale(5)'})
-
         // while (CharacterNumber.length < 4) {
         //     var num = parseInt(Math.random() * 4);
         //     if (CharacterNumber.indexOf(num) == -1) {
@@ -74,63 +76,64 @@ function CharacterGame() {
         //     }
         // }
 
+        const btnList = ()=>{
+            const randomNameList = [];
+
+            // 0부터 3까지의 랜덤한 값을 4개 가져오는 알고리즘
+            // 복권 알고리즘 : 1~45 까지의 랜덤한 값을 '중복되지 않게' 가져오는 알고리즘
+            while (randomNameList.length < 4) {
+                var num = parseInt(Math.random() * 4 );
+                if (randomNameList.indexOf(num) == -1) {
+                    randomNameList.push(num);
+                }
+            }
+
+            // mypokemon.name = ["a", "b", "c", "d"]
+            return mypokemon.name.map((name, idx)=>{
+
+                return <button key={idx} onClick={()=>{
+                    if(randomNameList[idx] === 0){
+                        console.log('정답!')
+                    }
+                    setIndex(index+1)
+                    }} 
+                    style={{width: '120px', height: '90px', margin: '5px', fontSize:'20px'}}>
+                        {mypokemon.name[randomNameList[idx]]}
+                </button>
+            })
+        }
+
         return <div className='testpage' style={{position: 'relative'}}>
-            { result ? "" : "" }
             <div style={{width: '400px', height: '300px', overflow: 'hidden', position: 'absolute', top: '30%', left: '50%', transform: 'translate(-50%, -50%)'}}>
-                <img style={style} alt="example" src={mypokemon.url[0]} width={400} height={300} />
+                {/* <img alt="example" src={mypokemon.url[0]} width={400} height={300} /> */}
+
+                <Card 
+                    hoverable
+                    style={{
+                    
+                    }}
+                    cover={<img alt="example" src={mypokemon.url[0]} width={400} height={300} />}
+                >
+                
+                
+                </Card>
+
             </div>
             <div style={{width: '10px', height: "285px"}}></div>
+
             <Progress
                 percent={((index+1) / (COUNT))*100}
-                style={{marginTop:'0px'}}
+                style={{margin:'0 0 30px 0'}}
                 strokeColor={{
                     '0%': 'rgb(254, 254, 207)',
                     '100%': '#108ee9',
                 }}
                 showInfo={false}
             />
-            <button onClick={()=>{
-                setStyle({transform: 'scale(1)'})
-                setTimeout(()=>{
-                        setIndex(index+1)
 
-                    }, 3000)
-                }} 
-                style={{width: '100px', height: '70px'}}>
-                    {mypokemon.name[0]}
-            </button>
-            <button onClick={()=>{
-                setStyle({transform: 'scale(1)'})
-                setTimeout(()=>{
-                        setIndex(index+1)
-
-                    }, 3000)
-                }} 
-                style={{width: '100px', height: '70px'}}>
-                    {mypokemon.name[1]}
-            </button><br></br>
-            <button onClick={()=>{
-                setStyle({transform: 'scale(1)'})
-                setTimeout(()=>{
-                        setIndex(index+1)
-
-                    }, 3000)
-                }} 
-                style={{width: '100px', height: '70px'}}>
-                    {mypokemon.name[2]}
-            </button>
-            <button onClick={()=>{
-                setStyle({transform: 'scale(1)'})
-                setTimeout(()=>{
-                        setIndex(index+1)
-
-                    }, 3000)
-                }} 
-                style={{width: '100px', height: '70px'}}>
-                    {mypokemon.name[3]}
-            </button>
-            
-            <div>{index+1} / {COUNT}</div>
+            {/* 캐릭터 이름 버튼 4개가 연달아 나오는 부분 */}
+            {btnList()}
+            <div style={{marginTop: '100px'}}>{index+1} / {COUNT}</div>
         </div>
     }
 
