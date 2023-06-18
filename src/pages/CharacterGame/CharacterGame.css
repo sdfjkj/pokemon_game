@@ -34,3 +34,12 @@
 .Charcterback { 
     transform: rotateY(180deg);
 }
+
+.fig-container {
+    display: flex;
+}
+
+.fig-container figure {
+    display: inline-block;
+    margin: 13px;
+}
