@@ -10,7 +10,8 @@ export const PokemonContainer = styled.div`
 
 export const PokemonBox = styled.div``;
 
-export const PokemonImage = styled.img``;
+export const PokemonImage = styled.img`
+width:130px;`;
 
 export const PokemonName = styled.div``;
 
@@ -47,6 +48,7 @@ export const SettedPokemonBox = styled.div`
   align-items: center;
   justify-content: center;
   margin-bottom:20px;
+  background-color:white;
 `;
 
 export const ComName = styled.div`

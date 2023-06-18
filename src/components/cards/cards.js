@@ -80,9 +80,7 @@ export const BigCards = ({ pokemon, onClick, selected }) => {
 
 export const SettedCards = ({ pokemon, onClick, ifSelected }) => {
   const imgSrc = img_list.find((img) => pokemon.sprites[img] !== null);
-  console.log(pokemon.forms[0].name);
-  if(ifSelected){console.log(ifSelected.forms[0].name);}
-  
+
   return (
     <div>
       {pokemon && (

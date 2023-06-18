@@ -1,20 +1,39 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import "./cardGame.css";
+import {
+  LobbyPage,
+  Title,
+  CardBox,
+  SettingButton,
+  StartButton,
+  ButtonContainer,
+  CardContainer,
+  SelectedCardText,
+  CardText,
+  SelectedPokemonContainer,
+  MessageBox,
+  ContentsContainer,
+  SelectContentsContainer,
+} from "./styled.js";
 
 import { useNavigate } from "react-router-dom";
 
 export const CardGame = () => {
+  const [countLoading, setCountLoading] = useState(0);
+  const [disableLoad, setDisableLoad] = useState(false);
   const [mypokemon, setMypokemon] = useState([]);
   const [selectedpokemon, setselectedpokemon] = useState([]);
-  const [message, setMessage] = useState("포켓몬을 세 마리 선택하세요.");
+  const [message, setMessage] = useState("포켓몬을 로드하세요.");
+
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (selectedpokemon.length >= 3) {
-      setMessage("선택 완료");
-    } else {
-      setMessage("포켓몬을 세 마리 선택하세요.");
+    if (selectedpokemon.length > 0) {
+      if (selectedpokemon.length >= 3) {
+        setMessage("선택 완료");
+      } else {
+        setMessage("포켓몬을 세 마리 선택하세요.");
+      }
     }
   }, [selectedpokemon]);
 
@@ -56,95 +75,96 @@ export const CardGame = () => {
     const imgSrc = img_list.find((img) => pokemon.sprites[img] !== null);
 
     return (
-      <div
-        className={`pokemon_container ${isSelected ? "selected" : ""}`}
-        onClick={() => handlePokemonSelect(pokemon)}
-      >
+      <>
         {pokemon && (
-          <div className="pokemon_box">
+          <CardBox
+            isSelected={isSelected}
+            onClick={() => handlePokemonSelect(pokemon)}
+          >
             <img
               src={pokemon.sprites[imgSrc]}
               alt="pokemon"
               className="poke_img"
             />
-            <div className="pokemon_name">{pokemon.forms[0].name}</div>
-            <div className="pokemon_stat_attack">
+            <CardText>{pokemon.forms[0].name}</CardText>
+            <CardText>
               attack :
               {
                 pokemon.stats.find((stat) => stat.stat.name === "attack")
                   .base_stat
               }
-            </div>
-          </div>
+            </CardText>
+          </CardBox>
         )}
-      </div>
+      </>
     );
   };
 
   const game_setting = () => {
-    setselectedpokemon([]);
-    setMypokemon([]);
 
+    if (disableLoad) { 
+      return;
+    }
+    setDisableLoad(true);
+
+    setCountLoading(countLoading + 1);
+    if (countLoading > 4) {
+      alert("로드 횟수 초과");
+      return;
+    }
+    setselectedpokemon([]);
+    setMypokemon([]); //이게 비동기적이라 한번에 빠르게 누르면 초과해서 로드ㅠㅠ
+    
     const newNumbersSet = new Set();
-    while (newNumbersSet.size < 8) {
+    while (newNumbersSet.size < 6) {
       newNumbersSet.add(generateRandomNumber());
     }
 
     const newNumbers = [...newNumbersSet];
 
     async function fetchPokemonData() {
-      for (let i = 0; i < 8; i++) {
+      for (let i = 0; i < 6; i++) {
         const response = await axios.get(
           `https://pokeapi.co/api/v2/pokemon/${newNumbers[i]}`
         );
-
         setMypokemon((mypokemon) => [...mypokemon, response.data]);
       }
+      setDisableLoad(false);
+
     }
     fetchPokemonData();
   };
 
   return (
-    <div className="game_page">
-      <div className="game_container">
-        <div className="start_button_container">
-          <button onClick={game_setting} className="start_button">
-            Choose My Pokemon
-          </button>
-        </div>
-        <div className="card_container">
-          {mypokemon && mypokemon.map((el) => <Cards {...el} />)}
-        </div>
-        <div className="game_state_container">
-          <div className="selected_pokemon_zone">
-            <div className="selected_pokemon_name">Selected Pokemon</div>
-            <div className="selected_pokemon_container">
-              {selectedpokemon &&
-                selectedpokemon.map((el) => <Cards {...el} />)}
-            </div>
-          </div>
-          <div className="text_button_container">
-            <div className="warning">{message}</div>
-
-            <div className="game_button_container">
-              <div
-                onClick={() => {
-                  if (selectedpokemon.length >= 3) {
-                    navigate("/Game", { state: { selectedpokemon } });
-                  }
-                }}
-                className={
-                  selectedpokemon.length >= 3
-                    ? "game_start_button"
-                    : "disabled_button"
-                }
-              >
-                Game Start
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <LobbyPage>
+      <Title>Lobby</Title>{" "}
+      <ButtonContainer>
+        <SettingButton onClick={game_setting} disabled={disableLoad}>
+          Load Pokemon
+        </SettingButton>
+        <StartButton
+          isDisabled={selectedpokemon.length < 3}
+          onClick={() => {
+            if (selectedpokemon.length >= 3) {
+              navigate("/Game", { state: { selectedpokemon } });
+            }
+          }}
+        >
+          Game Start
+        </StartButton>
+      </ButtonContainer>
+      <ContentsContainer>
+        <SelectContentsContainer>
+          <MessageBox>{message}</MessageBox>
+          <CardContainer>
+            {mypokemon && mypokemon.map((el) => <Cards {...el} />)}
+          </CardContainer>
+        </SelectContentsContainer>
+        <SelectedPokemonContainer>
+          <SelectedCardText>Selected Pokemon</SelectedCardText>
+          {selectedpokemon && selectedpokemon.map((el) => <Cards {...el} />)}
+        </SelectedPokemonContainer>
+      </ContentsContainer>
+    </LobbyPage>
   );
 };

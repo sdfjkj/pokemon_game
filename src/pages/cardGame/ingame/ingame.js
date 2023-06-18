@@ -1,6 +1,6 @@
 import React, { useReducer, useEffect, useRef } from "react";
 import axios from "axios";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   BigCards,
   SettedCards,
@@ -12,7 +12,8 @@ import {
 // overflow:hidden
 // object-fit:cover
 
-import { Button, Modal } from "antd";
+import { Button } from "antd";
+
 import {
   IngamePage,
   IngameContainer,
@@ -24,35 +25,57 @@ import {
   TurnCount,
   ModalPokemonContainer,
   ScoreContainer,
-  Hand,
   FightingZone,
   HandCards,
+  ChooseTypeModal,
+  StyledButton,
+  ButtonColumnContainer,
+  MessageModal,
+  Message,
+  State,
   OwnerName,
-  MyZone,
+  StyledLinkContainer,
+  StyledLink,
   ButtonContainer,
+  Count,
+  BigModalContainer,
+  SmallModalContainer,
+  MyFightingContainer,
+  ComFightingContainer,
+  HpBar,
+  MySpin,
+  FinishModal,
+  FinishModalContentsContainer,
+  Result,
 } from "./styled.js";
 
 const initialState = {
   stage: 0,
   turn: 0,
   myPokemon: [],
+  myPokemonInModal: [],
   selectedPokemon: null,
   comPokemon: [],
   selectedCard: null,
   selectedComCard: null,
-  isModalVisible: true,
+  isModalVisible: false,
   text: "Let's Win !!",
-  myHp: 0,
-  comHp: 0,
+  myHp: null,
+  comHp: null,
   count: 3,
   MyAttackType: null,
   comAttackType: null,
   disableSpecialComAttack: false,
   disableSpecialComDefense: false,
+  disableSpecialMyAttack: false,
+  disableSpecialMyDefense: false,
   buttonVisible: false,
   myScore: 0,
   comScore: 0,
-  moveModal: false,
+  finishModal: false,
+  myMove: "stop",
+  comMove: "stop",
+  message: "",
 };
 
 const gameReducer = (state, action) => {
@@ -63,6 +86,8 @@ const gameReducer = (state, action) => {
       return { ...state, turn: action.payload };
     case "SET_MY_POKEMON":
       return { ...state, myPokemon: action.payload };
+    case "SET_MY_POKEMON_IN_MODAL":
+      return { ...state, myPokemonInModal: action.payload };
     case "SET_SELECTED_POKEMON":
       return { ...state, selectedPokemon: action.payload };
     case "SET_COM_POKEMON":
@@ -90,9 +115,13 @@ const gameReducer = (state, action) => {
     case "SET_COM_ATTACK_TYPE":
       return { ...state, comAttackType: action.payload };
     case "DISABLE_SPECIAL_COM_ATTACK":
-      return { ...state, disableSpecialComAttack: true };
+      return { ...state, disableSpecialComAttack: action.payload };
     case "DISABLE_SPECIAL_COM_DEFENSE":
-      return { ...state, disableSpecialComDefense: true };
+      return { ...state, disableSpecialComDefense: action.payload };
+    case "DISABLE_SPECIAL_MY_ATTACK":
+      return { ...state, disableSpecialMyAttack: action.payload };
+    case "DISABLE_SPECIAL_MY_DEFENSE":
+      return { ...state, disableSpecialMyDefense: action.payload };
     case "SHOW_TYPE_BUTTON":
       return { ...state, buttonVisible: true };
     case "HIDE_TYPE_BUTTON":
@@ -101,42 +130,40 @@ const gameReducer = (state, action) => {
       return { ...state, myScore: action.payload };
     case "SET_COM_SCORE":
       return { ...state, comScore: action.payload };
-    case "SET_MOVE_MODAL":
-      return { ...state, moveModal: action.payload };
+    case "SET_FINISH_MODAL":
+      return { ...state, finishModal: action.payload };
+    case "SET_MY_MOVE":
+      return { ...state, myMove: action.payload };
+    case "SET_COM_MOVE":
+      return { ...state, comMove: action.payload };
+    case "SET_MESSAGE":
+      return { ...state, message: action.payload };
     default:
       throw new Error();
   }
 };
 
-// 타이머 해결하기 clearInterval이 제대로 안쳐먹는듯
+// 타이머 해결하기 clearInterval이 제대로 안 되는듯
 
 export const Game = () => {
   const [state, dispatch] = useReducer(gameReducer, initialState);
+  const navigate = useNavigate();
   const stateRef = useRef(state);
   const location = useLocation();
-  useEffect(() => {
-    dispatch({
-      type: "SET_MY_POKEMON",
-      payload: location.state.selectedpokemon,
-    });
-    game_setting();
-  }, []);
+  const generateRandomNumber = () => {
+    return Math.floor(Math.random() * 1010) + 1;
+  };
 
   useEffect(() => {
-    if (state.comPokemon.length > 0 && state.isModalVisible === false) {
-      settingHp();
-      dispatch({ type: "SET_TURN", payload: 1 });
-      dispatch({ type: "SET_STAGE", payload: state.stage + 1 });
-    }
-  }, [state.isModalVisible, state.selectedCard]);
+    game_setting();
+  }, []);
 
   useEffect(() => {
     stateRef.current = state;
   }, [state]);
 
   useEffect(() => {
-    dispatch({ type: "HIDE_TYPE_BUTTON" });
-    if (state.isModalVisible === false) {
+    if (state.isModalVisible === false && state.myHp !== null) {
       //hp 체크
       checkPokemonHp();
 
@@ -147,7 +174,9 @@ export const Game = () => {
           clearInterval(timer);
         }
       }, 1000);
-      const timeoutId = setTimeout(afterCountdown, 4000);
+      const timeoutId = setTimeout(() => {
+        if (stateRef.current.isModalVisible === false) afterCountdown();
+      }, 4000);
 
       return () => {
         clearInterval(timer);
@@ -157,23 +186,38 @@ export const Game = () => {
   }, [state.myHp, state.comHp]);
 
   useEffect(() => {
+    console.log("도너츠",state.isModalVisible)
     if (state.comPokemon.length > 0 && state.isModalVisible === false) {
       if (state.myScore === 2 || state.comScore === 2) {
-        console.log("love");
+        dispatch({ type: "SET_FINISH_MODAL", payload: true });
       } else {
         dispatch({
           type: "SET_SELECTED_COM_CARD",
           payload: state.comPokemon[state.stage],
         });
-        const newSelectedCard =
-          state.myPokemon[0] === state.selectedCard
-            ? state.myPokemon[1]
-            : state.myPokemon[0];
-        dispatch({ type: "SET_SELECTED_CARD", payload: newSelectedCard });
+        const temp = state.myPokemonInModal.filter(
+          (item) => item.forms[0].name !== state.selectedCard.forms[0].name
+        );
+
+        //다음 포켓몬 선택 모달 열림
+        dispatch({ type: "SET_MY_POKEMON_IN_MODAL", payload: temp });
+
+        //특수 공격 및 방어 on
+        dispatch({ type: "DISABLE_SPECIAL_COM_ATTACK", payload: false });
+        dispatch({ type: "DISABLE_SPECIAL_COM_DEFENSE", payload: false });
+        dispatch({ type: "DISABLE_SPECIAL_MY_ATTACK", payload: false });
+        dispatch({ type: "DISABLE_SPECIAL_MY_DEFENSE", payload: false });
       }
     }
   }, [state.myScore, state.comScore]);
 
+  useEffect(() => {
+    if (state.myPokemonInModal.length > 0) {
+      dispatch({ type: "SHOW_MODAL" });
+    }
+  }, [state.myPokemonInModal]);
+
+  //카운트 다운 후에 실행되는 함수
   const afterCountdown = () => {
     dispatch({ type: "SET_TURN", payload: state.turn + 1 });
     dispatch({ type: "SHOW_TYPE_BUTTON" });
@@ -181,11 +225,13 @@ export const Game = () => {
     dispatch({ type: "resetCount" });
   };
 
-  const generateRandomNumber = () => {
-    return Math.floor(Math.random() * 1010) + 1;
-  };
-
+  //게임 세팅
   const game_setting = () => {
+    dispatch({
+      type: "SET_MY_POKEMON",
+      payload: location.state.selectedpokemon,
+    });
+
     const newNumbersSet = new Set();
     while (newNumbersSet.size < 3) {
       newNumbersSet.add(generateRandomNumber());
@@ -205,35 +251,36 @@ export const Game = () => {
       dispatch({ type: "SET_SELECTED_COM_CARD", payload: newPokemon[0] });
     }
     fetchPokemonData();
+    setTimeout(() => {
+      dispatch({
+        type: "SET_MY_POKEMON_IN_MODAL",
+        payload: location.state.selectedpokemon,
+      });
+    }, 1500);
   };
 
-  //모달 열고 닫기
-  const handleOk = () => {
+  //스탯 확인 모달 열고 닫기
+  const closeStatModal = () => {
     dispatch({ type: "SET_SELECTED_POKEMON", payload: null });
   };
 
-  const clickedHandCard = (p) => {
+  const openStatModal = (p) => {
     dispatch({ type: "SET_SELECTED_POKEMON", payload: p });
   };
 
   //hp 확인
   const checkPokemonHp = () => {
-    if (state.myHp <= 0 || state.comHp <= 0) {
-      if (state.myHp <= 0) {
-        dispatch({ type: "SET_COM_SCORE", payload: state.comScore + 1 });
-      } else {
-        dispatch({ type: "SET_MY_SCORE", payload: state.myScore + 1 });
+    if (state.myHp !== null && state.comHp !== null)
+      if (state.myHp <= 0 || state.comHp <= 0) {
+        if (state.myHp <= 0) {
+          dispatch({ type: "SET_COM_SCORE", payload: state.comScore + 1 });
+        } else {
+          dispatch({ type: "SET_MY_SCORE", payload: state.myScore + 1 });
+        }
       }
-      // dispatch({ type: "SET_SELECTED_COM_CARD", payload: state.comPokemon[1]});
-      // const newSelectedCard =
-      //   state.myPokemon[0] === state.selectedCard
-      //     ? state.myPokemon[1]
-      //     : state.myPokemon[0];
-      // dispatch({ type: "SET_SELECTED_CARD", payload: newSelectedCard });
-    }
   };
 
-  //컴퓨터 공격타입
+  //컴퓨터 공격타입 (순수 함수)
   const getComRandomAttackType = () => {
     const attackTypes = [
       "attack",
@@ -255,9 +302,9 @@ export const Game = () => {
     const selectedAttackType = availableAttackTypes[randomIndex];
 
     if (selectedAttackType === "special-attack") {
-      dispatch({ type: "DISABLE_SPECIAL_COM_ATTACK" });
+      dispatch({ type: "DISABLE_SPECIAL_COM_ATTACK", payload: true });
     } else if (selectedAttackType === "special-defense") {
-      dispatch({ type: "DISABLE_SPECIAL_COM_DEFENSE" });
+      dispatch({ type: "DISABLE_SPECIAL_COM_DEFENSE", payload: true });
     }
     return selectedAttackType;
   };
@@ -274,13 +321,28 @@ export const Game = () => {
     dispatch({ type: "SET_MY_HP", payload: myPokemonHP });
   };
 
-  //공격타입 및 전투 및 데미지 계산
+  //애니메이션 실행 함수 (순수 함수)
+  const animation = (myAttackType, comAttackType) => {
+    if (myAttackType.includes("ack") && comAttackType.includes("ack")) {
+      dispatch({ type: "SET_MY_MOVE", payload: "halfLeft" });
+      dispatch({ type: "SET_COM_MOVE", payload: "halfRight" });
+    } else if (myAttackType.includes("ack")) {
+      dispatch({ type: "SET_MY_MOVE", payload: "left" });
+    } else if (comAttackType.includes("ack")) {
+      dispatch({ type: "SET_COM_MOVE", payload: "right" });
+    }
+    setTimeout(() => {
+      dispatch({ type: "SET_MY_MOVE", payload: "stop" });
+      dispatch({ type: "SET_COM_MOVE", payload: "stop" });
+    }, 2000);
+  };
+
+  //공격타입 및 전투 및 데미지 계산 (안 순수 함수 : hp에 접근 흠..)
   const handleAttack = (attackType) => {
     if (state.selectedCard) {
-      //hp
-      //스피드
       let damage = 0;
 
+      //스피드 스탯으로 회피 확률 계산
       const comPokemonSpeed = state.selectedComCard.stats.find(
         (stat) => stat.stat.name === "speed"
       ).base_stat;
@@ -292,60 +354,76 @@ export const Game = () => {
 
       //컴퓨터 스탯
       const comAttackType = getComRandomAttackType();
-      console.log(comAttackType);
       const comPokemonType = state.selectedComCard.stats.find(
         (stat) => stat.stat.name === comAttackType
       ).base_stat;
-      console.log(comPokemonType);
       const myPokemonType = state.selectedCard.stats.find(
         (stat) => stat.stat.name === attackType
       ).base_stat;
-
-      console.log(myPokemonType);
-
       dispatch({ type: "SET_COM_ATTACK_TYPE", payload: comAttackType });
       dispatch({ type: "SET_MY_ATTACK_TYPE", payload: attackType });
 
+      if (attackType === "special-attack") {
+        dispatch({ type: "DISABLE_SPECIAL_MY_ATTACK", payload: true });
+      } else if (attackType === "special-defense") {
+        dispatch({ type: "DISABLE_SPECIAL_MY_DEFENSE", payload: true });
+      }
+
+      //공격타입 선택 모달 닫기
+      dispatch({ type: "HIDE_TYPE_BUTTON" });
+
       //데미지 계산
-      if (comPokemonType > myPokemonType) {
-        if (comPokemonType === "defense" && myPokemonType === "defense") {
-          dispatch({ type: "SET_MY_HP", payload: state.myHp + 1 });
-          return;
-        } else if (
-          speedDifference > 0 &&
-          Math.random() * 100 < speedDifference
-        ) {
-          console.log("회피");
-          dispatch({ type: "SET_MY_HP", payload: state.myHp + 1 });
-          return;
-        } else {
-          damage = comPokemonType - myPokemonType;
+      if (comAttackType.includes("fense") && attackType.includes("fense")) {
+        dispatch({
+          type: "SET_MESSAGE",
+          payload: "상대도 방어를 선택하였습니다.",
+        });
+        dispatch({ type: "SET_MY_HP", payload: state.myHp + 1 });
+        dispatch({ type: "SET_COM_HP", payload: state.comHp + 1 });
+      } else {
+        if (comPokemonType > myPokemonType) {
+          animation(attackType, comAttackType);
+          if (speedDifference > 0 && Math.random() * 100 < speedDifference) {
+            dispatch({
+              type: "SET_MESSAGE",
+              payload: "우리 포켓몬이 회피에 성공하였습니다.",
+            });
+            dispatch({ type: "SET_MY_HP", payload: state.myHp - 1 });
+            return;
+          } else {
+            damage = comPokemonType - myPokemonType;
+          }
+          dispatch({ type: "SET_MY_HP", payload: state.myHp - damage });
+        } else if (myPokemonType > comPokemonType) {
+          animation(attackType, comAttackType);
+          if (
+            speedDifference < 0 &&
+            Math.random() * 100 < Math.abs(speedDifference)
+          ) {
+            dispatch({
+              type: "SET_MESSAGE",
+              payload: "상대가 회피하였습니다!",
+            });
+            dispatch({ type: "SET_COM_HP", payload: state.comHp - 1 });
+            return;
+          } else {
+            damage = myPokemonType - comPokemonType;
+          }
+          dispatch({ type: "SET_COM_HP", payload: state.comHp - damage });
         }
-        dispatch({ type: "SET_MY_HP", payload: state.myHp - damage });
-      } else if (myPokemonType > comPokemonType) {
-        if (comPokemonType === "defense" && myPokemonType === "defense") {
-          dispatch({ type: "SET_MY_HP", payload: state.myHp + 1 });
-          return;
-        } else if (
-          speedDifference < 0 &&
-          Math.random() * 100 < Math.abs(speedDifference)
-        ) {
-          console.log("회피1");
-          dispatch({ type: "SET_COM_HP", payload: state.comHp + 1 });
-          return;
-        } else {
-          damage = myPokemonType - comPokemonType;
-        }
-        dispatch({ type: "SET_COM_HP", payload: state.comHp - damage });
       }
     }
   };
 
+  const handleCancel = () => {
+    navigate("/");
+  };
+
   return (
     <IngamePage>
-      <Modal
-        className="modal"
-        title="첫 출전할 포켓몬을 고르세요."
+      {/* //첫 포켓몬 선택 모달 */}
+      <BigModalContainer
+        title="출전할 포켓몬을 고르세요."
         open={state.isModalVisible}
         centered="True"
         footer={[
@@ -354,6 +432,9 @@ export const Game = () => {
             type="primary"
             onClick={() => {
               if (state.selectedCard) {
+                settingHp();
+                dispatch({ type: "SET_TURN", payload: 1 });
+                dispatch({ type: "SET_STAGE", payload: state.stage + 1 });
                 dispatch({ type: "HIDE_MODAL", payload: false });
               }
             }}
@@ -364,116 +445,205 @@ export const Game = () => {
         closable={false}
       >
         <ModalPokemonContainer>
-          {state.myPokemon &&
-            state.myPokemon.map((el) => (
+          {state.myPokemonInModal &&
+            state.myPokemonInModal.map((el) => (
               <BigCards
                 pokemon={el}
-                onClick={() =>
-                  dispatch({ type: "SET_SELECTED_CARD", payload: el })
-                }
+                onClick={() => {
+                  dispatch({ type: "SET_SELECTED_CARD", payload: el });
+                }}
                 selected={state.selectedCard === el}
               />
             ))}
         </ModalPokemonContainer>
-      </Modal>
+      </BigModalContainer>
 
-      <Modal
-        className="modal"
+      {/* 세트된 카드 선택시 스탯 보여주는 모달 */}
+      <SmallModalContainer
         title="Stats"
         open={state.selectedPokemon != null}
         centered="True"
         footer={[
-          <Button key="submit" type="primary" onClick={handleOk}>
+          <Button key="submit" type="primary" onClick={closeStatModal}>
             OK
           </Button>,
         ]}
-        onCancel={handleOk}
+        onCancel={closeStatModal}
       >
-        {state.selectedPokemon && <BigCards pokemon={state.selectedPokemon} />}
-      </Modal>
-      <ScoreContainer>
-        <LabelText>Score</LabelText>
-        <NormalText>
-          {state.comScore} | {state.myScore}
-        </NormalText>
-      </ScoreContainer>
-      <IngameContainer>
-        <HandContainer>
-          <OwnerName>Computer</OwnerName>
-          <HandCards>
-            {state.comPokemon &&
-              state.comPokemon.map((el) => (
-                <SettedCards pokemon={el} onClick={() => clickedHandCard(el)} />
-              ))}
-          </HandCards>
-        </HandContainer>
-        <FightingZoneContainerContainer>
-          <FightingZoneContainer>
-            <TurnCount>Stage{state.stage}</TurnCount>
+        <ModalPokemonContainer>
+          {state.selectedPokemon && (
+            <BigCards pokemon={state.selectedPokemon} />
+          )}
+        </ModalPokemonContainer>
+      </SmallModalContainer>
 
-            <FightingZone>
-              {state.comPokemon.length > 0 && (
-                <FightingPokemon pokemon={state.selectedComCard} flip={true} />
-              )}
-
-              {state.selectedCard && (
-                <FightingPokemon pokemon={state.selectedCard} flip={false} />
-              )}
-            </FightingZone>
-          </FightingZoneContainer>
-          {state.buttonVisible === true && (
-            <ButtonContainer>
-              <Button
+      {/* 공격타입 선택 모달 */}
+      <ChooseTypeModal
+        title="공격 타입을 선택하세요."
+        open={state.buttonVisible}
+        centered="True"
+        closable={false}
+        footer={[]}
+      >
+        {state.buttonVisible === true && (
+          <ButtonContainer>
+            <ButtonColumnContainer>
+              <StyledButton
                 onClick={() => {
                   handleAttack("attack");
                 }}
               >
                 공격
-              </Button>
-              <Button
+              </StyledButton>
+              <StyledButton
                 onClick={() => {
                   handleAttack("defense");
                 }}
               >
                 방어
-              </Button>
-              <Button
+              </StyledButton>
+            </ButtonColumnContainer>
+            <ButtonColumnContainer>
+              <StyledButton
                 onClick={() => {
                   handleAttack("special-attack");
                 }}
+                disabled={state.disableSpecialMyAttack}
               >
                 특수공격
-              </Button>
-              <Button
+              </StyledButton>
+              <StyledButton
                 onClick={() => {
                   handleAttack("special-defense");
                 }}
+                disabled={state.disableSpecialMyDefense}
               >
                 특수방어
-              </Button>
-            </ButtonContainer>
-          )}
-        </FightingZoneContainerContainer>
-        <HandContainer>
-          <OwnerName>Me</OwnerName>
-          <HandCards>
-            {state.myPokemon &&
-              state.myPokemon.map((el) => (
-                <SettedCards
-                  pokemon={el}
-                  onClick={() => clickedHandCard(el)}
-                  ifSelected={state.selectedCard}
-                />
-              ))}
-          </HandCards>
-        </HandContainer>
-      </IngameContainer>
+              </StyledButton>
+            </ButtonColumnContainer>
+          </ButtonContainer>
+        )}
+      </ChooseTypeModal>
 
-      <div>my hp : {state.myHp}</div>
-      <div>my attacktype : {state.MyAttackType} </div>
-      <div>com hp : {state.comHp}</div>
-      <div>com attacktype : {state.comAttackType}</div>
-      <div>{state.count}</div>
+      {/* 전투 후 메시지 모달 */}
+      <MessageModal>
+        <Message>{state.message}</Message>
+      </MessageModal>
+      {/* 종료 시 등장하는 모달 */}
+      <FinishModal
+        title=""
+        open={state.finishModal}
+        centered="True"
+        footer={[]}
+        closable={false}
+      >
+        <FinishModalContentsContainer>
+          {state.myScore > state.comScore ? (
+            <Result>승리!</Result>
+          ) : (
+            <Result>패배</Result>
+          )}
+          <StyledLinkContainer>
+            <StyledLink to="/Result">랭킹보기</StyledLink>
+            <StyledLink to="/Card_Game">다시 하기</StyledLink>
+            <StyledLink to="/Main">홈으로</StyledLink>
+          </StyledLinkContainer>
+        </FinishModalContentsContainer>
+      </FinishModal>
+
+      {/* 페이지 기본 컨텐츠 */}
+      {state.selectedCard === null && <MySpin />}
+      {state.selectedCard && (
+        <>
+          <ScoreContainer>
+            <LabelText>Score</LabelText>
+            <NormalText>
+              {state.comScore} : {state.myScore}
+            </NormalText>
+          </ScoreContainer>
+          <IngameContainer>
+            <HandContainer>
+              <OwnerName>Computer</OwnerName>
+              <HandCards>
+                {state.comPokemon &&
+                  state.comPokemon.map((el) => (
+                    <SettedCards
+                      pokemon={el}
+                      onClick={() => openStatModal(el)}
+                      ifSelected={state.selectedComCard}
+                    />
+                  ))}
+              </HandCards>
+            </HandContainer>
+            <FightingZoneContainerContainer>
+              <FightingZoneContainer>
+                <TurnCount>Stage{state.stage}</TurnCount>
+
+                <FightingZone>
+                  <ComFightingContainer anime={state.comMove}>
+                    <State>Hp : {state.comHp}</State>
+                    {state.selectedComCard && (
+                      <HpBar
+                        percent={
+                          (state.comHp /
+                            state.selectedComCard.stats.find(
+                              (stat) => stat.stat.name === "hp"
+                            ).base_stat) *
+                          100
+                        }
+                        showInfo={false}
+                        strokeColor="#FF0000"
+                      />
+                    )}
+
+                    <State>{state.comAttackType}</State>
+                    {state.comPokemon.length > 0 && (
+                      <FightingPokemon
+                        pokemon={state.selectedComCard}
+                        flip={true}
+                      />
+                    )}
+                  </ComFightingContainer>
+                  <MyFightingContainer anime={state.myMove}>
+                    <State>Hp : {state.myHp}</State>
+                    {state.selectedCard && (
+                      <HpBar
+                        percent={
+                          (state.myHp /
+                            state.selectedCard.stats.find(
+                              (stat) => stat.stat.name === "hp"
+                            ).base_stat) *
+                          100
+                        }
+                        showInfo={false}
+                        strokeColor="#FF0000"
+                      />
+                    )}
+                    <State>{state.MyAttackType} </State>
+                    {state.selectedCard && (
+                      <FightingPokemon pokemon={state.selectedCard} />
+                    )}
+                  </MyFightingContainer>
+                </FightingZone>
+              </FightingZoneContainer>
+            </FightingZoneContainerContainer>
+            <HandContainer>
+              <OwnerName>Me</OwnerName>
+              <HandCards>
+                {state.myPokemon &&
+                  state.myPokemon.map((el) => (
+                    <SettedCards
+                      pokemon={el}
+                      onClick={() => openStatModal(el)}
+                      ifSelected={state.selectedCard}
+                    />
+                  ))}
+              </HandCards>
+            </HandContainer>
+          </IngameContainer>
+          <Count>{state.count}</Count>
+        </>
+      )}
     </IngamePage>
   );
 };

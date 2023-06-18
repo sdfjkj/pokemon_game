@@ -13,7 +13,7 @@ export const Randering = () => {
       discription: "카드게임을 통해 포켓몬을 만나보세요!",
       detail1: "랜덤으로 포켓몬을 뽑아 강한 상대방과 대결!",
       detail2: "약한 포켓몬을 뽑아도 전략만 잘 짜면 이길 수 있어요!",
-      src: "https://www.gifcen.com/wp-content/uploads/2022/12/pokemon-gif-16.gif",
+      src: "https://2.bp.blogspot.com/-YNPdLQywtW4/W8wueuzNkrI/AAAAAAAAAOY/lrahfc22fLs2AMr068cnPvVGYenr-_8XACLcBGAs/s1600/99E493345AE78EF20E.gif",
       route : "/Card_Game"
     },
     {
@@ -53,7 +53,6 @@ export const Randering = () => {
       />
       {/* <p>{message}</p> */}
       {functiondata.map((data, index) => {
-        console.log(data.id)
         return (
           <MainCardSection
             name={data.name}
