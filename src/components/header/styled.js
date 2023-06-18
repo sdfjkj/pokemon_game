@@ -17,7 +17,6 @@ export const Container = styled.div`
 
 export const LeftConainer = styled.div`
   display: flex;
-
   align-items: center;
 `;
 
@@ -53,15 +52,9 @@ export const RightConainer = styled.div`
 export const Nav = styled(Link)`
   font-size:20px;
   margin-right:30px;
-  width:
   &:hover {
     text-decoration: underline;
     color: white;
   }
 `;
 
-
-export const Sign = styled.div`
-  
-
-`;
