@@ -62,7 +62,7 @@ export const LoginContainer = styled.div`
   display : flex;
   align-items: center;
   justify-content: flex-end;
-  width: 270px;
+  width: 290px;
 `;
 
 export const Label = styled.div`

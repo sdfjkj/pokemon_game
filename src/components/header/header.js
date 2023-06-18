@@ -1,5 +1,9 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router";
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { setId } from "../../storage/actions";
 import {
   Container,
   LeftConainer,
@@ -20,11 +24,16 @@ function Header(props) {
   const url = window.location.href;
   const [username, setUsername] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const navigate = useNavigate();
+
+  const dispatch = useDispatch();
+  const user = useSelector((state) => {
+    return state;
+  });
 
   useEffect(() => {
-    const storedUsername = localStorage.getItem("username");
-    if (storedUsername) {
-      setUsername(storedUsername);
+    if (user.id !== null) {
+      setUsername(user.id);
       setIsLoggedIn(true);
     }
   }, []);
@@ -34,15 +43,16 @@ function Header(props) {
       alert("유저명을 입력하세요.");
       return;
     }
-  
-    localStorage.setItem("username", username);
+    dispatch(setId(username));
     setIsLoggedIn(true);
+    navigate("/Main");
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("username");
     setUsername("");
+    dispatch(setId(null));
     setIsLoggedIn(false);
+    navigate("/Main");
   };
 
   const handleChange = (event) => {
@@ -51,7 +61,7 @@ function Header(props) {
 
   const logoClick = () => {
     if (location.pathname === "/Main") {
-      window.location.reload();
+      window.scrollTo(0, 0);
     }
   };
   return (
@@ -88,7 +98,12 @@ function Header(props) {
           </LoginContainer>
         ) : (
           <LoginContainer>
-            <StyledInput type="text" placeholder="Username" onChange={handleChange}  maxLength={5}/>
+            <StyledInput
+              type="text"
+              placeholder="Username"
+              onChange={handleChange}
+              maxLength={5}
+            />
             <StyledButton onClick={handleLogin}>Login</StyledButton>
           </LoginContainer>
         )}

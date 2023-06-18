@@ -7,7 +7,8 @@ import {
   SettedCards,
   FightingPokemon,
 } from "../../../components/cards/cards";
-
+import { useDispatch, useSelector } from "react-redux";
+import { setTurn } from "../../../storage/actions";
 import { Button } from "antd";
 
 import {
@@ -85,8 +86,6 @@ const gameReducer = (state, action) => {
   switch (action.type) {
     case "SET_STAGE":
       return { ...state, stage: action.payload };
-    case "SET_TURN":
-      return { ...state, turn: action.payload };
     case "SET_MY_POKEMON":
       return { ...state, myPokemon: action.payload };
     case "SET_MY_POKEMON_IN_MODAL":
@@ -139,6 +138,8 @@ const gameReducer = (state, action) => {
       return { ...state, comMove: action.payload };
     case "SET_MESSAGE":
       return { ...state, message: action.payload };
+    case "ADD_TURN":
+      return { ...state, turn: state.turn + 1 };
     default:
       throw new Error();
   }
@@ -149,9 +150,16 @@ export const Game = () => {
   // const navigate = useNavigate();
   const stateRef = useRef(state);
   const location = useLocation();
+
   const generateRandomNumber = () => {
     return Math.floor(Math.random() * 1010) + 1;
   };
+  //리덕스
+  const user = useSelector((state) => {
+    return state;
+  });
+
+  const reduxdispatch = useDispatch();
 
   useEffect(() => {
     game_setting();
@@ -163,6 +171,8 @@ export const Game = () => {
 
   useEffect(() => {
     if (state.isModalVisible === false && state.myHp !== null) {
+      dispatch({ type: "ADD_TURN" });
+
       //hp 체크
       checkPokemonHp();
 
@@ -192,7 +202,13 @@ export const Game = () => {
   useEffect(() => {
     if (state.comPokemon.length > 0 && state.isModalVisible === false) {
       if (state.myScore === 2 || state.comScore === 2) {
+        console.log("state.turn",state.turn);
+        console.log("user.id",user.id)
+        if (user.id !== null) {
+          reduxdispatch(setTurn(state.turn));
+        }
         dispatch({ type: "SET_FINISH_MODAL", payload: true });
+
       } else {
         dispatch({
           type: "SET_SELECTED_COM_CARD",
@@ -205,7 +221,7 @@ export const Game = () => {
         //다음 포켓몬 선택 모달 열림
         dispatch({ type: "SET_MY_POKEMON_IN_MODAL", payload: temp });
 
-        //특수 공격 및 방어 on
+        //특수 공격 및 방어 on 어택타입 리셋
         dispatch({ type: "SET_MY_ATTACK_TYPE", payload: null });
         dispatch({ type: "SET_COM_ATTACK_TYPE", payload: null });
         dispatch({ type: "DISABLE_SPECIAL_COM_ATTACK", payload: false });
@@ -570,9 +586,7 @@ export const Game = () => {
     }
   };
 
-  // const handleCancel = () => {
-  //   navigate("/");
-  // };
+  
 
   return (
     <IngamePage>
@@ -618,11 +632,7 @@ export const Game = () => {
         title="Stats"
         open={state.selectedPokemon != null}
         centered="True"
-        footer={[
-          <Button key="submit" type="primary" onClick={closeStatModal}>
-            OK
-          </Button>,
-        ]}
+        footer={[]}
         onCancel={closeStatModal}
         closable={false}
       >
@@ -648,9 +658,15 @@ export const Game = () => {
             <Result>패배</Result>
           )}
           <StyledLinkContainer>
-            <StyledLink to="/Result">랭킹보기</StyledLink>
-            <StyledLink to="/Card_Game">다시 하기</StyledLink>
-            <StyledLink to="/Main">홈으로</StyledLink>
+            <StyledLink to="/Result">
+              기록 보기
+            </StyledLink>
+            <StyledLink to="/Card_Game">
+              다시 하기
+            </StyledLink>
+            <StyledLink to="/Main">
+              홈으로
+            </StyledLink>
           </StyledLinkContainer>
         </FinishModalContentsContainer>
       </FinishModal>
@@ -682,16 +698,20 @@ export const Game = () => {
             <FightingZoneContainerContainer>
               <FightingZoneContainer>
                 <TurnCount>Round{state.stage}</TurnCount>
-                <ChooseAttackType  bg={state.count !== 0 ? "transparent" : "#eefffc"}
-                  shadow={state.count !== 0 ? "none" : "0px 5px 5px rgba(0, 0, 0, 0.15)"}
-
+                <ChooseAttackType
+                  bg={state.count !== 0 ? "transparent" : "#eefffc"}
+                  shadow={
+                    state.count !== 0
+                      ? "none"
+                      : "0px 5px 5px rgba(0, 0, 0, 0.15)"
+                  }
                 >
                   {state.count !== 0 ? (
                     <Count>{state.count}</Count>
                   ) : state.buttonVisible === true ? (
                     <>
                       <ChooseAttackTypeText>
-                        내 포켓몬의 공격 방식을 선택하세요.
+                        내 포켓몬의 공격 형식을 선택하세요.
                       </ChooseAttackTypeText>
                       <ButtonContainer>
                         <StyledButton
@@ -794,72 +814,71 @@ export const Game = () => {
                 <AttackTypeContainer>
                   <LogTitle>전투 로그</LogTitle>
                   <LogContainer>
-                      <StyledTable>
-                        <tbody>
-                          <tr>
-                            <StyledCellHead>Pokemon</StyledCellHead>
-                            <StyledCell>
-                              {state.selectedComCard.forms[0].name}
-                            </StyledCell>
-                          </tr>
-                          <tr>
-                            <StyledCellHead>Attack Type</StyledCellHead>
-                            <StyledCell>
-                              {
-                                ChangeKorName(
-                                  state.selectedComCard,
-                                  state.comAttackType
-                                )[0]
-                              }
-                            </StyledCell>
-                          </tr>
-                          <tr>
-                            <StyledCellHead>Value</StyledCellHead>
-                            <StyledCell>
-                              {
-                                ChangeKorName(
-                                  state.selectedComCard,
-                                  state.comAttackType
-                                )?.[1]
-                              }
-                            </StyledCell>
-                          </tr>
-                        </tbody>
-                      </StyledTable>
-                      <StyledTable>
-                        <tbody>
-                          <tr>
-                            <StyledCellHead>Pokemon</StyledCellHead>
-                            <StyledCell>
-                              {state.selectedCard.forms[0].name}
-                            </StyledCell>
-                          </tr>
-                          <tr>
-                            <StyledCellHead>Attack Type</StyledCellHead>
-                            <StyledCell>
-                              {
-                                ChangeKorName(
-                                  state.selectedCard,
-                                  state.myAttackType
-                                )[0]
-                              }
-                            </StyledCell>
-                          </tr>
-                          <tr>
-                            <StyledCellHead>Value</StyledCellHead>
-                            <StyledCell>
-                              {
-                                ChangeKorName(
-                                  state.selectedCard,
-                                  state.myAttackType
-                                )?.[1]
-                              }
-                            </StyledCell>
-                          </tr>
-                        </tbody>
-                      </StyledTable>
+                    <StyledTable>
+                      <tbody>
+                        <tr>
+                          <StyledCellHead>Pokemon</StyledCellHead>
+                          <StyledCell>
+                            {state.selectedComCard.forms[0].name}
+                          </StyledCell>
+                        </tr>
+                        <tr>
+                          <StyledCellHead>Attack Type</StyledCellHead>
+                          <StyledCell>
+                            {
+                              ChangeKorName(
+                                state.selectedComCard,
+                                state.comAttackType
+                              )[0]
+                            }
+                          </StyledCell>
+                        </tr>
+                        <tr>
+                          <StyledCellHead>Value</StyledCellHead>
+                          <StyledCell>
+                            {
+                              ChangeKorName(
+                                state.selectedComCard,
+                                state.comAttackType
+                              )?.[1]
+                            }
+                          </StyledCell>
+                        </tr>
+                      </tbody>
+                    </StyledTable>
+                    <StyledTable>
+                      <tbody>
+                        <tr>
+                          <StyledCellHead>Pokemon</StyledCellHead>
+                          <StyledCell>
+                            {state.selectedCard.forms[0].name}
+                          </StyledCell>
+                        </tr>
+                        <tr>
+                          <StyledCellHead>Attack Type</StyledCellHead>
+                          <StyledCell>
+                            {
+                              ChangeKorName(
+                                state.selectedCard,
+                                state.myAttackType
+                              )[0]
+                            }
+                          </StyledCell>
+                        </tr>
+                        <tr>
+                          <StyledCellHead>Value</StyledCellHead>
+                          <StyledCell>
+                            {
+                              ChangeKorName(
+                                state.selectedCard,
+                                state.myAttackType
+                              )?.[1]
+                            }
+                          </StyledCell>
+                        </tr>
+                      </tbody>
+                    </StyledTable>
                   </LogContainer>
-              
                 </AttackTypeContainer>
               )}
             </FightingZoneContainerContainer>
