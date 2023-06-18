@@ -93,9 +93,13 @@ function CharacterGame() {
 
                 return <button key={idx} onClick={()=>{
                     if(randomNameList[idx] === 0){
-                        console.log('정답!')
+                        alert('정답!')
+                        setIndex(index+1)
+                    } else {
+                        alert(`오답! 정답은 ${mypokemon.name[0]}입니다!`)
+
                     }
-                    setIndex(index+1)
+                    
                     }} 
                     style={{width: '120px', height: '90px', margin: '5px', fontSize:'20px'}}>
                         {mypokemon.name[randomNameList[idx]]}
@@ -103,23 +107,34 @@ function CharacterGame() {
             })
         }
 
-        return <div className='testpage' style={{position: 'relative'}}>
-            <div style={{width: '400px', height: '300px', overflow: 'hidden', position: 'absolute', top: '30%', left: '50%', transform: 'translate(-50%, -50%)'}}>
-                {/* <img alt="example" src={mypokemon.url[0]} width={400} height={300} /> */}
-
-                <Card 
-                    hoverable
-                    style={{
-                    
-                    }}
-                    cover={<img alt="example" src={mypokemon.url[0]} width={400} height={300} />}
-                >
+        return <div className='testpage' >
+                <img alt="example" src={mypokemon.url[0]} width={400} height={300} />
                 
-                
-                </Card>
 
-            </div>
-            <div style={{width: '10px', height: "285px"}}></div>
+                {/* <div className='Characterflip'>
+                    <div className='Charctercard' onClick={(e)=>{
+                        e.target.style.transform = "rotateY(180deg)"
+                    }}>
+                        <div className="Characterfront">
+                            <Card 
+                                
+                            >
+                                <img alt="example" src={mypokemon.url[0]} width={400} height={300} />
+                            </Card>
+
+                        </div>
+
+                
+                    <div className="Characterback">
+                        <Card 
+                            
+                        >
+                            <img alt="example" src={mypokemon.url[0]} width={400} height={300} />
+                        </Card>
+                    </div>
+                </div>
+                </div> */}
+
 
             <Progress
                 percent={((index+1) / (COUNT))*100}
@@ -129,12 +144,12 @@ function CharacterGame() {
                     '100%': '#108ee9',
                 }}
                 showInfo={false}
-            />
+                />
 
             {/* 캐릭터 이름 버튼 4개가 연달아 나오는 부분 */}
             {btnList()}
             <div style={{marginTop: '100px'}}>{index+1} / {COUNT}</div>
-        </div>
+            </div>
     }
 
     return <div>
