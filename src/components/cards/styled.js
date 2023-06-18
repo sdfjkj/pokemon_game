@@ -7,15 +7,9 @@ export const PokemonContainer = styled.div`
     `
   `}
 `;
-
-export const PokemonBox = styled.div``;
-
 export const PokemonImage = styled.img`
-width:130px;`;
-
-export const PokemonName = styled.div``;
-
-export const PokemonStat = styled.div``;
+  width: 130px;
+`;
 
 export const IngamePokemonBox = styled.div`
   border: 1px solid black;
@@ -37,18 +31,17 @@ export const Name = styled.div`
   font-weight: bold;
 `;
 
-
 export const SettedPokemonBox = styled.div`
   border: 1px solid black;
   cursor: pointer;
   width: 130px;
-  height:160px;
+  height: 160px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin-bottom:20px;
-  background-color:white;
+  margin-bottom: 40px;
+  background-color: white;
 `;
 
 export const ComName = styled.div`
@@ -57,6 +50,9 @@ export const ComName = styled.div`
 
 export const FightingPokemonImage = styled.img`
   width: 180px;
+  border: ${({ anime }) => (anime === "def" ? "2.5px solid blue" : "none")};
+  border-radius: ${({ anime }) => (anime === "def" ? "50%" : "none")};
+
   transform: ${(props) => (props.flip ? "scaleX(-1)" : "none")};
 `;
 

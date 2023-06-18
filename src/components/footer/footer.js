@@ -14,13 +14,14 @@ function Footer() {
           <FooterContent>Author:</FooterContent>
           <FooterContent> 강제구, 윤영서, 전현정</FooterContent>
         </FooterContentLayoutContainer>
-        <FooterContentLayoutContainer>
-          <FooterContent>API Refenece:</FooterContent>
-          <FooterContent> pokeapi.co</FooterContent>
-        </FooterContentLayoutContainer>
+
         <FooterContentLayoutContainer>
           <FooterContent>From: </FooterContent>
           <FooterContent>Dongguk University</FooterContent>
+        </FooterContentLayoutContainer>
+        <FooterContentLayoutContainer>
+          <FooterContent>API Refenece:</FooterContent>
+          <FooterContent> pokeapi.co</FooterContent>
         </FooterContentLayoutContainer>
       </FooterContentContainer>
     </Container>

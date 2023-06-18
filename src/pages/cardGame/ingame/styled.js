@@ -45,7 +45,9 @@ export const HandContainer = styled.div`
   border-radius: 15px;
   background-color: #eefffc;
   padding: 30px 10px;
-  box-shadow: 0 1rem 1rem rgba(0, 0, 0, 0.05);
+  height: 650px;
+  box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.15);
+  margin-top: 40px;
 `;
 
 export const FightingZoneContainerContainer = styled.div`
@@ -56,7 +58,6 @@ export const FightingZoneContainerContainer = styled.div`
 `;
 
 export const FightingZoneContainer = styled.div`
-  height: 450px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -73,25 +74,28 @@ export const FightingZoneContainer = styled.div`
   background-position: center;
   border-radius: 20px;
   padding: 40px 30px;
-  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.05);
   border: 0.2px solid beige;
+  box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.15);
 `;
 
 export const FightingZone = styled.div`
   display: flex;
   width: 90%;
   height: 100%;
-  align-items: flex-end;
+
   justify-content: space-between;
 `;
 
 export const LabelText = styled.div`
   font-weight: bold;
   font-size: 30px;
+  text-shadow: 0px 3px 3px rgba(0, 0, 0, 0.15);
 `;
 export const TurnCount = styled.div`
   font-weight: bold;
-  font-size: 25px;
+  font-size: 27px;
+  font-style: italic;
+  text-shadow: 0px 3px 3px rgba(0, 0, 0, 0.15);
 `;
 
 export const NormalText = styled.div`
@@ -99,17 +103,12 @@ export const NormalText = styled.div`
   font-size: 25px;
 `;
 
-// export const Hand = styled.div`
-//   display: flex;
-//   width: 1000px;
-//   margin: 20px 0px;
-// `;
-
 export const HandCards = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  margin-top: 10px;
 `;
 
 export const OwnerName = styled.div`
@@ -118,11 +117,29 @@ export const OwnerName = styled.div`
   font-size: 20px;
   font-style: italic;
   padding-bottom: 20px;
+  text-shadow: 0px 3px 3px rgba(0, 0, 0, 0.15);
 `;
 
-export const ChooseTypeModal = styled(Modal)`
-  width: 260px !important;
-  margin-top: 100px;
+export const ChooseAttackType = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  background-color: #eefffc;
+  margin-top: 40px;
+  margin-bottom: 30px;
+  border-radius: 15px;
+  box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.15);
+`;
+
+export const ChooseAttackTypeText = styled.div`
+  font-weight: bold;
+  text-align: center;
+  font-size: 18px;
+
+  font-style: italic;
+  color: #0092ff;
 `;
 
 export const ButtonContainer = styled.div`
@@ -130,28 +147,58 @@ export const ButtonContainer = styled.div`
   justify-content: space-between;
   align-items: center;
   margin-top: 20px;
-  width: 215px;
+  width: 455px;
+  padding: 2px 30px;
 `;
 
-export const ButtonColumnContainer = styled.div`
+export const ResultMessage = styled.div`
+  font-weight: bold;
+  font-size: 23px;
+  text-shadow: 0px 1px 1px rgba(0, 0, 0, 0.15);
+  text-align: center;
+`;
+
+export const MessageContainer = styled.div`
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 455px;
+  height: 100%;
+  padding: 10px;
+`;
+
+export const Message = styled.div`
+  font-weight: bold;
+  font-size: 20px;
+  text-shadow: 0px 1px 1px rgba(0, 0, 0, 0.15);
+  text-align: center;
+`;
+
+export const AttackTypeContainer = styled.div`
+  display: flex;
   justify-content: space-between;
-  height: 100px;
-  padding: 20px 0px;
+  width: 80%;
+  margin-top: 15px;
+`;
+export const AttackType = styled.div`
+  font-size: 17px;
+  font-weight: bold;
+  text-align: center;
 `;
 
 export const StyledButton = styled.button`
   background-color: ${(props) => (props.disabled ? "grey" : "#ffa842")};
-  width: 90px;
-  font-size: 16px;
-  padding: 5px 0px;
+  width: 100px;
+  font-weight: bold;
+  font-size: 17px;
+  padding: 5px 3px;
   box-shadow: 0px 3px 3px rgba(0, 0, 0, 0.15);
   border: none;
   border-radius: 10px;
   color: white;
-  cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};\
-  &:hover {
+  cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
+  \ &:hover {
     background-color: ${(props) => (props.disabled ? "grey" : "#ffc97e")};
   }
 `;
@@ -173,10 +220,6 @@ export const StyledLink = styled(Link)`
   width: 100px;
   text-align: center;
   box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.15);
-`;
-
-export const MessageModal = styled(Modal)`
-  width: 700px !important;
 `;
 
 export const FinishModal = styled(Modal)`
@@ -208,26 +251,25 @@ export const Result = styled.div`
   color: #575757;
 `;
 
-export const Message = styled.div``;
-
 export const State = styled.div`
   font-size: 20px;
   font-weight: bold;
-  color: rgb(72, 72, 72);
+  text-shadow: 0px 3px 3px rgba(0, 0, 0, 0.15);
 `;
 
 export const Count = styled.div`
-  width: 40px;
   text-align: center;
-  position: relative;
-  bottom: 570px;
-  left: 350px;
-  font-size: 20px;
+  font-size: 40px;
   font-style: italic;
   font-weight: bold;
   background-color: rgb(255, 255, 255);
   border-radius: 15px;
   padding: 3px 10px;
+  height: 100%;
+  width: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 export const HpBar = styled(Progress)`
@@ -258,23 +300,23 @@ export const MyFightingContainer = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
   animation: ${({ anime }) => {
     if (anime === "stop") return "none";
+    if(anime ==="run")
+      return css`
+        ${runRight} 1.5s forwards
+      `;  
     if (anime === "left")
       return css`
-        ${moveLeft} 1s forwards
+        ${moveLeft} 1.5s forwards
       `;
-    if (anime === "right")
-      return css`
-        ${moveRight} 1s forwards
-      `;
+
     if (anime === "halfLeft")
       return css`
-        ${moveHalfLeft} 1s forwards
-      `;
-    if (anime === "halfRight")
-      return css`
-        ${moveHalfRight} 1s forwards
+        ${moveHalfLeft} 1.5s forwards
       `;
     return "none";
   }};
@@ -285,26 +327,47 @@ export const ComFightingContainer = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  background-repeat: no-repeat;
+  background-position: center center;
   animation: ${({ anime }) => {
     if (anime === "stop") return "none";
-    if (anime === "left")
+    if (anime === "run")
       return css`
-        ${moveLeft} 1s forwards
+        ${runLeft} 1.5s forwards
       `;
     if (anime === "right")
       return css`
-        ${moveRight} 1s forwards
-      `;
-    if (anime === "halfLeft")
-      return css`
-        ${moveHalfLeft} 1s forwards
+        ${moveRight} 1.5s forwards
       `;
     if (anime === "halfRight")
       return css`
-        ${moveHalfRight} 1s forwards
+        ${moveHalfRight} 1.5s forwards
       `;
     return "none";
   }};
+`;
+const runRight = keyframes`
+  0% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(60px, -60px);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
+`;
+
+const runLeft = keyframes`
+  0% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(-60px, -60px);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
 `;
 
 const moveLeft = keyframes`
@@ -312,7 +375,7 @@ const moveLeft = keyframes`
     transform: translateX(0);
   }
   50% {
-    transform: translateX(-200px);
+    transform: translateX(-300px);
   }
   100% {
     transform: translateX(0);
@@ -324,7 +387,7 @@ const moveRight = keyframes`
     transform: translateX(0);
   }
   50% {
-    transform: translateX(200px);
+    transform: translateX(300px);
   }
   100% {
     transform: translateX(0);
@@ -335,7 +398,7 @@ const moveHalfLeft = keyframes`
     transform: translateX(0);
   }
   50% {
-    transform: translateX(-100px);
+    transform: translateX(-150px);
   }
   100% {
     transform: translateX(0);
@@ -347,7 +410,7 @@ const moveHalfRight = keyframes`
     transform: translateX(0);
   }
   50% {
-    transform: translateX(100px);
+    transform: translateX(150px);
   }
   100% {
     transform: translateX(0);

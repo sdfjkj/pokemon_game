@@ -15,6 +15,7 @@ import { CardGame } from "./pages/cardGame/cardGame/cardGame";
 import { Game } from "./pages/cardGame/ingame/ingame";
 import { Proposal } from "./pages/proposal/proposal";
 import { AboutUs } from "./pages/aboutUs/aboutUs";
+import { ResultPage } from "./pages/cardGame/result/result";
 import MBTI from "./pages/MBTI/MBTI";
 import Error from "./pages/404Error/404"
 import CharacterGame from "./pages/CharacterGame/CharacterGame";
@@ -44,6 +45,7 @@ function App() {
         <Route exact path="/About_Us" element={<AboutUs />} />
         <Route exact path="/MBTI" element={<MBTI />} />
         <Route exact path="/CharacterGame" element={<CharacterGame />} />
+        <Route exact path="/Result" element={<ResultPage />} />
         <Route path="*" element={<Error />} />
       </Routes>
       <Footer />

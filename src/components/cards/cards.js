@@ -1,21 +1,17 @@
-import React, { useState } from "react";
+import React from "react";
 
 import {
-  PokemonContainer,
-  PokemonBox,
+
   PokemonImage,
-  PokemonName,
-  PokemonStat,
+
   IngamePokemonBox,
   Name,
   Stat,
   SettedPokemonBox,
   ComName,
   FightingPokemonImage,
-  ButtonContainer,
-  FightingPokemonContainer,
-} from "./styled.js";
 
+} from "./styled.js";
 
 const img_list = [
   "front_default",
@@ -23,7 +19,6 @@ const img_list = [
   "front_female",
   "front_shiny_female",
 ];
-
 
 export const BigCards = ({ pokemon, onClick, selected }) => {
   const imgSrc = img_list.find((img) => pokemon.sprites[img] !== null);
@@ -84,7 +79,16 @@ export const SettedCards = ({ pokemon, onClick, ifSelected }) => {
   return (
     <div>
       {pokemon && (
-        <SettedPokemonBox onClick={onClick}  style={ifSelected ? (pokemon.forms[0].name === ifSelected.forms[0].name ? { backgroundColor: "#c3fac4" } : {}) : {}}>
+        <SettedPokemonBox
+          onClick={onClick}
+          style={
+            ifSelected
+              ? pokemon.forms[0].name === ifSelected.forms[0].name
+                ? { backgroundColor: "#c3fac4" }
+                : {}
+              : {}
+          }
+        >
           <PokemonImage src={pokemon.sprites[imgSrc]} alt="pokemon" />
           <ComName>{pokemon.forms[0].name}</ComName>
         </SettedPokemonBox>
@@ -93,14 +97,18 @@ export const SettedCards = ({ pokemon, onClick, ifSelected }) => {
   );
 };
 
-
-export const FightingPokemon = ({ pokemon, flip }) => {
+export const FightingPokemon = ({ pokemon, flip, anime }) => {
   const imgSrc = img_list.find((img) => pokemon.sprites[img] !== null);
   return (
     <div>
       {pokemon && (
         <div>
-          <FightingPokemonImage flip={flip} src={pokemon.sprites[imgSrc]} alt="pokemon" />
+          <FightingPokemonImage
+            flip={flip}
+            anime = {anime}
+            src={pokemon.sprites[imgSrc]}
+            alt="pokemon"
+          />
           <ComName>{pokemon.forms[0].name}</ComName>
         </div>
       )}

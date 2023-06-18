@@ -3,9 +3,9 @@ import styled from "styled-components";
 export const Container = styled.div`
   background-color: #fffaef;
   margin-top: 40px;
-  height: 250px;
+  height: 300px;
   width: 100%;
-  padding: 0px 300px;
+  padding: 0px 150px;
   box-sizing: border-box;
   display: flex;
   align-items: center;
@@ -14,9 +14,9 @@ export const FooterContentContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  height: 60%;
-  width:80%;
-  margin-left:120px;
+  align-items: center;
+  height: 180px;
+  width:600px;
 `;
 
 export const FooterContentLayoutContainer= styled.div`
@@ -24,9 +24,6 @@ export const FooterContentLayoutContainer= styled.div`
   justify-content: space-between;
   width:100%;
 `;
-
-
-
 
 export const FooterContent = styled.div`
   width:300px;
