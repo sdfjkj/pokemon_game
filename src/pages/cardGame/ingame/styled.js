@@ -81,8 +81,6 @@ export const FightingZoneContainer = styled.div`
 export const FightingZone = styled.div`
   display: flex;
   width: 90%;
-  height: 100%;
-
   justify-content: space-between;
 `;
 
@@ -125,12 +123,12 @@ export const ChooseAttackType = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 200px;
-  background-color: #eefffc;
+  height: 130px;
+  background-color: ${(props) => (props.bg ? props.bg : "transparent")};
   margin-top: 40px;
-  margin-bottom: 30px;
+  margin-bottom: 80px;
   border-radius: 15px;
-  box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.15);
+  box-shadow: ${(props) => (props.shadow ? props.shadow : "none")};
 `;
 
 export const ChooseAttackTypeText = styled.div`
@@ -151,11 +149,19 @@ export const ButtonContainer = styled.div`
   padding: 2px 30px;
 `;
 
-export const ResultMessage = styled.div`
+export const WinMessage = styled.div`
   font-weight: bold;
   font-size: 23px;
   text-shadow: 0px 1px 1px rgba(0, 0, 0, 0.15);
   text-align: center;
+  color: blue;
+`;
+export const LoseMessage = styled.div`
+  font-weight: bold;
+  font-size: 23px;
+  text-shadow: 0px 1px 1px rgba(0, 0, 0, 0.15);
+  text-align: center;
+  color: red;
 `;
 
 export const MessageContainer = styled.div`
@@ -164,8 +170,7 @@ export const MessageContainer = styled.div`
   justify-content: center;
   align-items: center;
   width: 455px;
-  height: 100%;
-  padding: 10px;
+  padding: 30px;
 `;
 
 export const Message = styled.div`
@@ -173,18 +178,61 @@ export const Message = styled.div`
   font-size: 20px;
   text-shadow: 0px 1px 1px rgba(0, 0, 0, 0.15);
   text-align: center;
+  color: #4f4f4f;
 `;
+
+export const LogTitle = styled.div`
+font-weight: bold;
+font-size: 25px;
+margin-bottom: 30px;
+text-shadow: 0px 1px 1px rgba(0, 0, 0, 0.15);
+`;
+export const LogContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  width:85%;
+`;
+
+
+
+export const StyledTable = styled.table`
+  border-collapse: collapse;
+  box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.15);
+`;
+
+export const StyledCell = styled.td`
+  border: 1px solid black;
+  padding: 10px;
+  width:150px;
+  text-align: center;
+  text-shadow: 0px 1px 1px rgba(0, 0, 0, 0.15);
+
+`;
+
+export const StyledCellHead = styled.td`
+  border: 1px solid black;
+  padding: 10px;
+  width:100px;
+  background-color: #ffa842;
+  font-weight: bold;
+  text-shadow: 0px 1px 1px rgba(0, 0, 0, 0.15);
+
+`;
+
+
 
 export const AttackTypeContainer = styled.div`
   display: flex;
-  justify-content: space-between;
-  width: 80%;
-  margin-top: 15px;
-`;
-export const AttackType = styled.div`
-  font-size: 17px;
-  font-weight: bold;
-  text-align: center;
+  flex-direction: column;
+  align-items: center;
+  background-color: white;
+  width: 90%;
+  padding: 30px 30px 50px 30px;
+  border:1px solid black;
+  margin-top: 40px;
+  border-radius: 15px;
+  box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.15);
+  margin-bottom:100px;
 `;
 
 export const StyledButton = styled.button`
@@ -262,7 +310,6 @@ export const Count = styled.div`
   font-size: 40px;
   font-style: italic;
   font-weight: bold;
-  background-color: rgb(255, 255, 255);
   border-radius: 15px;
   padding: 3px 10px;
   height: 100%;
@@ -305,10 +352,10 @@ export const MyFightingContainer = styled.div`
   background-position: center center;
   animation: ${({ anime }) => {
     if (anime === "stop") return "none";
-    if(anime ==="run")
+    if (anime === "run")
       return css`
         ${runRight} 1.5s forwards
-      `;  
+      `;
     if (anime === "left")
       return css`
         ${moveLeft} 1.5s forwards

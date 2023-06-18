@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useReducer, useEffect, useRef } from "react";
 import axios from "axios";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import {
   BigCards,
   SettedCards,
@@ -26,11 +26,16 @@ import {
   StyledButton,
   ChooseAttackType,
   ChooseAttackTypeText,
+  LogTitle,
   MessageContainer,
-  ResultMessage,
+  WinMessage,
+  LoseMessage,
+  LogContainer,
+  StyledTable,
+  StyledCellHead,
+  StyledCell,
   Message,
   AttackTypeContainer,
-  AttackType,
   State,
   OwnerName,
   StyledLinkContainer,
@@ -201,6 +206,8 @@ export const Game = () => {
         dispatch({ type: "SET_MY_POKEMON_IN_MODAL", payload: temp });
 
         //특수 공격 및 방어 on
+        dispatch({ type: "SET_MY_ATTACK_TYPE", payload: null });
+        dispatch({ type: "SET_COM_ATTACK_TYPE", payload: null });
         dispatch({ type: "DISABLE_SPECIAL_COM_ATTACK", payload: false });
         dispatch({ type: "DISABLE_SPECIAL_COM_DEFENSE", payload: false });
         dispatch({ type: "DISABLE_SPECIAL_MY_ATTACK", payload: false });
@@ -343,7 +350,7 @@ export const Game = () => {
       }
     }
     //둘다 방어
-    else{
+    else {
       dispatch({ type: "SET_MY_MOVE", payload: "def" });
       dispatch({ type: "SET_COM_MOVE", payload: "def" });
     }
@@ -675,7 +682,10 @@ export const Game = () => {
             <FightingZoneContainerContainer>
               <FightingZoneContainer>
                 <TurnCount>Round{state.stage}</TurnCount>
-                <ChooseAttackType>
+                <ChooseAttackType  bg={state.count !== 0 ? "transparent" : "#eefffc"}
+                  shadow={state.count !== 0 ? "none" : "0px 5px 5px rgba(0, 0, 0, 0.15)"}
+
+                >
                   {state.count !== 0 ? (
                     <Count>{state.count}</Count>
                   ) : state.buttonVisible === true ? (
@@ -719,49 +729,13 @@ export const Game = () => {
                   ) : state.message !== null ? (
                     <MessageContainer>
                       {state.myHp === 0 ? (
-                        <ResultMessage>{state.stage}라운드 패배</ResultMessage>
+                        <LoseMessage>{state.stage}라운드 패배</LoseMessage>
                       ) : state.comHp === 0 ? (
-                        <ResultMessage>{state.stage}라운드 승리</ResultMessage>
+                        <WinMessage>{state.stage}라운드 승리</WinMessage>
                       ) : (
                         <></>
                       )}
                       <Message>{state.message}</Message>
-                      <AttackTypeContainer>
-                        <>
-                          <AttackType>
-                            Com :{" "}
-                            {
-                              ChangeKorName(
-                                state.selectedComCard,
-                                state.comAttackType
-                              )[0]
-                            }
-                            &nbsp;
-                            {
-                              ChangeKorName(
-                                state.selectedComCard,
-                                state.comAttackType
-                              )?.[1]
-                            }
-                          </AttackType>
-                          <AttackType>
-                            Me :{" "}
-                            {
-                              ChangeKorName(
-                                state.selectedCard,
-                                state.myAttackType
-                              )[0]
-                            }
-                            &nbsp;
-                            {
-                              ChangeKorName(
-                                state.selectedCard,
-                                state.myAttackType
-                              )?.[1]
-                            }
-                          </AttackType>
-                        </>
-                      </AttackTypeContainer>
                     </MessageContainer>
                   ) : (
                     <></>
@@ -816,6 +790,78 @@ export const Game = () => {
                   </MyFightingContainer>
                 </FightingZone>
               </FightingZoneContainer>
+              {state.myAttackType !== null && state.comAttackType !== null && (
+                <AttackTypeContainer>
+                  <LogTitle>전투 로그</LogTitle>
+                  <LogContainer>
+                      <StyledTable>
+                        <tbody>
+                          <tr>
+                            <StyledCellHead>Pokemon</StyledCellHead>
+                            <StyledCell>
+                              {state.selectedComCard.forms[0].name}
+                            </StyledCell>
+                          </tr>
+                          <tr>
+                            <StyledCellHead>Attack Type</StyledCellHead>
+                            <StyledCell>
+                              {
+                                ChangeKorName(
+                                  state.selectedComCard,
+                                  state.comAttackType
+                                )[0]
+                              }
+                            </StyledCell>
+                          </tr>
+                          <tr>
+                            <StyledCellHead>Value</StyledCellHead>
+                            <StyledCell>
+                              {
+                                ChangeKorName(
+                                  state.selectedComCard,
+                                  state.comAttackType
+                                )?.[1]
+                              }
+                            </StyledCell>
+                          </tr>
+                        </tbody>
+                      </StyledTable>
+                      <StyledTable>
+                        <tbody>
+                          <tr>
+                            <StyledCellHead>Pokemon</StyledCellHead>
+                            <StyledCell>
+                              {state.selectedCard.forms[0].name}
+                            </StyledCell>
+                          </tr>
+                          <tr>
+                            <StyledCellHead>Attack Type</StyledCellHead>
+                            <StyledCell>
+                              {
+                                ChangeKorName(
+                                  state.selectedCard,
+                                  state.myAttackType
+                                )[0]
+                              }
+                            </StyledCell>
+                          </tr>
+                          <tr>
+                            <StyledCellHead>Value</StyledCellHead>
+                            <StyledCell>
+                              {
+                                ChangeKorName(
+                                  state.selectedCard,
+                                  state.myAttackType
+                                )?.[1]
+                              }
+                            </StyledCell>
+                          </tr>
+                        </tbody>
+                      </StyledTable>
+                  </LogContainer>
+              
+                </AttackTypeContainer>
+              )}
             </FightingZoneContainerContainer>
             <HandContainer>
               <OwnerName>Me</OwnerName>

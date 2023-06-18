@@ -14,6 +14,7 @@ import {
   MessageBox,
   ContentsContainer,
   SelectContentsContainer,
+  MySpin,
 } from "./styled.js";
 
 import { useNavigate } from "react-router-dom";
@@ -101,8 +102,9 @@ export const CardGame = () => {
   };
 
   const game_setting = () => {
+    setMessage("포켓몬을 세 마리 선택하세요.");
 
-    if (disableLoad) { 
+    if (disableLoad) {
       return;
     }
     setDisableLoad(true);
@@ -114,7 +116,7 @@ export const CardGame = () => {
     }
     setselectedpokemon([]);
     setMypokemon([]); //이게 비동기적이라 한번에 빠르게 누르면 초과해서 로드ㅠㅠ
-    
+
     const newNumbersSet = new Set();
     while (newNumbersSet.size < 6) {
       newNumbersSet.add(generateRandomNumber());
@@ -130,7 +132,6 @@ export const CardGame = () => {
         setMypokemon((mypokemon) => [...mypokemon, response.data]);
       }
       setDisableLoad(false);
-
     }
     fetchPokemonData();
   };
@@ -157,7 +158,13 @@ export const CardGame = () => {
         <SelectContentsContainer>
           <MessageBox>{message}</MessageBox>
           <CardContainer>
-            {mypokemon && mypokemon.map((el) => <Cards {...el} />)}
+            {mypokemon.length === 0 ? (
+              <></>
+            ) : mypokemon.length < 6 ? (
+              <MySpin />
+            ) : (
+              mypokemon && mypokemon.map((el) => <Cards {...el} />)
+            )}
           </CardContainer>
         </SelectContentsContainer>
         <SelectedPokemonContainer>

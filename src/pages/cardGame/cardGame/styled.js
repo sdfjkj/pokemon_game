@@ -1,4 +1,7 @@
 import styled from "styled-components";
+import { Spin } from "antd";
+
+
 
 export const LobbyPage = styled.div`
   margin-top: 110px;
@@ -180,4 +183,9 @@ export const SelectedCardText = styled.div`
   font-size: 20px;
   margin: 5px 0px 30px 0px;
   font-style: italic;
+`;
+
+export const MySpin = styled(Spin)`
+
+
 `;
