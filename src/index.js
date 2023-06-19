@@ -17,10 +17,12 @@ import { Proposal } from "./pages/proposal/proposal";
 import { AboutUs } from "./pages/aboutUs/aboutUs";
 import { Result } from "./pages/cardGame/result/result";
 import MBTI from "./pages/MBTI/MBTI";
+import Pokewiki from './pages/Pokewiki/Pokewiki'
 import Error from "./pages/404Error/404";
 import CharacterGame from "./pages/CharacterGame/CharacterGame";
 import { Provider } from "react-redux";
 import Store from "./storage/store";
+import PokewikiDetails from "./pages/Pokewiki/PokewikiDetails";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
@@ -48,6 +50,8 @@ function App() {
         <Route exact path="/MBTI" element={<MBTI />} />
         <Route exact path="/CharacterGame" element={<CharacterGame />} />
         <Route exact path="/Result" element={<Result />} />
+        <Route exact path="/Pokewiki" element={<Pokewiki />} />
+        <Route exact path="/Pokewiki/:id" element={<PokewikiDetails />} />
         <Route path="*" element={<Error />} />
       </Routes>
       <Footer />

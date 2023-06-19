@@ -30,17 +30,17 @@ export const Randering = () => {
     {
       name: "Poke Wiki",
       discription: "포켓몬에 대해 알아보세요!",
-      detail1: "ㅁㄴㅇㄹ",
-      detail2: "ㅁㄴㅇㄹ",
+      detail1: "어떤 강력한 포켓몬을 사용하면 대결에서 이길 수 있을까?",
+      detail2: "포켓몬의 기술, 능력치를 포함한 모든 정보를 포켓몬 도감에서 확인하세요!",
       src: "https://i.chzbgr.com/full/8525634816/h561129EB/pokemon-memes-raichu-gif",
-      route: "/a",
+      route: "/Pokewiki",
     },
     {
       name: "Poke Game",
       discription: "포켓몬 캐릭터에 대해 알아보세요!",
       detail1: "캐릭터 이름 맞추기 게임!",
       detail2: "모르는 캐릭터도 알아보고 공부해요!",
-      src: "",
+      src: "https://i.chzbgr.com/full/8525634816/h561129EB/pokemon-memes-raichu-gif",
       route: "/CharacterGame",
     },
   ];

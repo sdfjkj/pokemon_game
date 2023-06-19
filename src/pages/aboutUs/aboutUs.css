@@ -1,0 +1,31 @@
+.US_body{
+    margin-top: 150px;
+    width: 1080px;
+    display: flex;
+    flex-direction: row;
+}
+.US_container{
+    margin: 10px;
+    padding: 0px;
+    border: solid 2px #ddd;
+    width: 340px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.US_container img{
+    width: 280px;
+    height: 280px;
+    margin: 30px;
+}
+
+.US_container p{
+    font-weight:lighter;
+    text-align: left;
+}
+
+.US_name{
+    font-size: 24px;
+}

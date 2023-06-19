@@ -1,0 +1,25 @@
+.tabs-container {
+    margin-top: 150px;
+    width: 1080px;
+}
+
+.tabs {
+    display: flex;
+    justify-content: center;
+}
+
+.tab {
+    padding: 10px;
+    background-color: lightgray;
+    cursor: pointer;
+}
+
+.tab.active {
+    background-color: darkgray;
+}
+
+.tab-content {
+    margin-top: 10px;
+    border: 1px solid lightgray;
+    padding: 10px;
+}
