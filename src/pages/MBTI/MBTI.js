@@ -195,15 +195,7 @@ const MBTI = () => {
             setMypokemonURL(result.data.sprites.front_default)
         }, 300));
             
-        const antIcon = (
-            <LoadingOutlined
-                style={{
-                    fontSize: 24,
-                }}
-                spin
-                />
-            );
-        const { Meta } = Card;
+        
         return (
             <div>
                 {/* <img src={mypokemonURL} width={300} height={300} /> */}
