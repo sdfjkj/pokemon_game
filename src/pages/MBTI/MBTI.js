@@ -201,7 +201,7 @@ const MBTI = () => {
                 {/* <img src={mypokemonURL} width={300} height={300} /> */}
                 {/* <h3>{pokemonInfo[0]}</h3> */}
             <div className='flip'>
-                <div className='card'>
+                <div className='card' onCli>
                     <div className="front">
                     <Card className='mbtiResultCard'
                             hoverable
@@ -236,8 +236,8 @@ const MBTI = () => {
                         >
                             <div className='mbtiResultCardText'>
                                 <h1 style={{margin:0}}>{pokemonInfo[0]}</h1>
-                                <a href='https://pokemon.fandom.com/wiki/Pok%C3%A9mon_Wiki'><h3>{pokemonInfo[2]}</h3></a>
-                                <a href =''><h4>{pokemonInfo[0]}에 대해 더 알고 싶다면?</h4></a>
+                                <a target='_blank' href={`https://pokemon.fandom.com/ko/wiki/${pokemonInfo[2]}`}><h3>{pokemonInfo[2]}</h3></a>
+                                <a target='_blank' href ={`https://www.16personalities.com/ko/%EC%84%B1%EA%B2%A9%EC%9C%A0%ED%98%95-${pokemonInfo[0]}`}><h4>{pokemonInfo[0]}에 대해 더 알고 싶다면?</h4></a>
                                 {/* <Meta title="" description="https://pokemon.fandom.com/wiki/Pok%C3%A9mon_Wiki" /> */}
                             </div>
                         </Card>

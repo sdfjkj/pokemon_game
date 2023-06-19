@@ -1,11 +1,44 @@
 import './CharacterGame.css';
-import {Progress, Card} from 'antd';
+import {Progress, } from 'antd';
 import {useEffect, useState} from 'react'
-import axios from "axios";
-import { resolvePath } from 'react-router';
+import { Space, Table, Tag } from 'antd';
+
+
 
 // 배열로 선언할 이유가 없음 -> 각 문제가 넘어갈 때마다 모든 정보를 가져올거기 때문에 그래서 정수값으로 사용
 const COUNT =4;
+const score = Array.from({length :COUNT},()=>0 )
+const CharacterList = Array.from({length :COUNT},()=>{return {name: "", url: ""}})
+// console.log(score)
+
+const columns = [
+        {
+        title: 'CharacterName',
+        dataIndex: 'CharacterName',
+        key: 'CharacterName',
+        render: (text) => <a target='_blank' href={`https://pokemon.fandom.com/wiki/${text}`}>{text}</a>,
+        },
+        {
+            title: 'CharacterImg',
+            dataIndex: 'CharacterImg',
+            key: 'CharacterImg',
+            render: (src) => <img src={src} />,
+            },
+        {
+        title: 'answer',
+        dataIndex: 'answer',
+        key: 'answer',
+        render : (s)=>{
+            if(s>0){
+                return "O"
+            }
+            else{
+                return "X"
+            }
+        }
+    },];
+
+
 
 function CharacterGame() {
     const [index, setIndex] = useState(0);
@@ -17,6 +50,33 @@ function CharacterGame() {
         name: [],
         url: [],
     });
+
+    const data = [
+        {
+        key: '1',
+        CharacterName: CharacterList[0].name,
+        CharacterImg: CharacterList[0].url,
+        answer: score[0],
+        },
+        {
+            key: '2',
+            CharacterName:CharacterList[1].name,
+            CharacterImg: CharacterList[1].url,
+            answer: score[1],
+        },
+        {
+            key: '3',
+            CharacterName: CharacterList[2].name,
+            CharacterImg: CharacterList[2].url,
+            answer: score[2],
+        },
+        {
+            key: '4',
+            CharacterName: CharacterList[3].name,
+            CharacterImg: CharacterList[3].url,
+            answer: score[3],
+        },
+    ];
         
     // useEffect(()=>{  
     //         const response = axios.get(
@@ -54,6 +114,11 @@ function CharacterGame() {
         }
         // 4개의 프로미스 객체가 끝나면 호출되는 Promise.all을 사용
         Promise.all([a,b,c,d]).then(pokemons =>{
+            if (index < COUNT){
+                CharacterList[index].name = pokemons[0].name;
+                CharacterList[index].url = pokemons[0].sprites.front_default;
+            }
+
             setMypokemon({
                 name: [pokemons[0].name, pokemons[1].name, pokemons[2].name, pokemons[3].name],
                 url:[pokemons[0].sprites.front_default, pokemons[1].sprites.front_default, pokemons[2].sprites.front_default, pokemons[3].sprites.front_default]
@@ -76,7 +141,7 @@ function CharacterGame() {
         //         CharacterNumber.push(num);
         //     }
         // }
-
+        
         const btnList = ()=>{
             const randomNameList = [];
 
@@ -97,12 +162,13 @@ function CharacterGame() {
                     if(randomNameList[idx] === 0){
                         setShowStyle({display: 'none'})
                         alert('정답!')
+                        score[index]=score[index]+1
                         setIndex(index+1)
                     
                     } else {
                         setShowStyle({display: 'block'})
                         alert(`오답! 정답은 ${mypokemon.name[0]}입니다! 정답을 다시 선택해주세요`)
-
+                        score[index]=score[index]-2
                         
                     }
                     
@@ -117,10 +183,6 @@ function CharacterGame() {
         return <div className='testpage' >
                 <img alt="example" src={mypokemon.url[0]} width={400} height={300} />
                 
-                
-    
-
-
             <Progress
                 percent={((index+1) / (COUNT))*100}
                 style={{margin:'0 0 30px 0'}}
@@ -144,8 +206,19 @@ function CharacterGame() {
             </div>
     }
 
+    const LastPage = () =>{
+        
+
+
+
+        return <div className='finalpage'>
+            <Table columns={columns} dataSource={data} pagination={false} />
+
+        </div>
+    }
+
     return <div>
-        {!start ?  <FirstPage></FirstPage> :( index === COUNT ? "" : <TestPage></TestPage> )}
+        {!start ?  <FirstPage></FirstPage> :( index === COUNT ? <LastPage></LastPage> : <TestPage></TestPage> )}
         
     </div>
 }

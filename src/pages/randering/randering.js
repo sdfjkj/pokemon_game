@@ -22,8 +22,8 @@ export const Randering = () => {
     {
       name: "Poke MBTI",
       discription: "포켓몬으로 알아보는 MBTI",
-      detail1: "ㅁㄴㅇㄹ",
-      detail2: "ㅁㄴㅇㄹ",
+      detail1: "MBTI검사로 알아보는 나와 비슷한 포켓몬",
+      detail2: "자신에 맞는 선택지를 선택하세요!16개의 문제로 아는 내 MBTI!",
       src: "https://media.tenor.com/8Vo82I74B38AAAAC/cute-pokemon.gif",
       route: "/MBTI",
     },
@@ -38,8 +38,8 @@ export const Randering = () => {
     {
       name: "Poke Game",
       discription: "포켓몬 캐릭터에 대해 알아보세요!",
-      detail1: "ㅁㄴㅇㄹ",
-      detail2: "ㅁㄴㅇㄹ",
+      detail1: "캐릭터 이름 맞추기 게임!",
+      detail2: "모르는 캐릭터도 알아보고 공부해요!",
       src: "",
       route: "/CharacterGame",
     },

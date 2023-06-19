@@ -43,3 +43,13 @@
     display: inline-block;
     margin: 13px;
 }
+.finalpage {
+    height: 700px;
+    width: 550px;
+    margin:0 auto;
+    position: relative;
+    margin-top: 130px;
+    text-align: center;
+    padding-top:100px ;
+    
+}
