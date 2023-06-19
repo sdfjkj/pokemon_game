@@ -1,4 +1,4 @@
-.testpage{
+.mbti-container .mbti-testpage{
 
     height: 400px;
     width: 550px;
@@ -8,7 +8,7 @@
     text-align: center;
     padding-top:100px ;
 }
-.teststart{
+.mbti-container .teststart{
     position: absolute;
     bottom: 0;
     left: 50%;
@@ -27,7 +27,7 @@
     border-bottom: 1px solid rgb(112, 112, 112);
     box-shadow: 0px 10px 15px 0px rgba(0, 0, 0, 0.4);
 }
-.selectButton{
+.mbti-container .selectButton{
     width: 300px;
     height: 80px;
     margin: 5px auto;
@@ -36,10 +36,10 @@
     box-shadow: 0px 10px 15px 0px rgba(0, 0, 0, 0.2);
     border-radius: 3%;
 }
-.selectButton:hover{
+.mbti-container .selectButton:hover{
     background-color:rgb(254, 254, 207);
 }
-.mbtiTestGobackButton{
+.mbti-container .mbtiTestGobackButton{
     width: 50px;
     height: 50px;
     background-color: white;
@@ -47,7 +47,7 @@
     border-radius: 10%;
     box-shadow: 0px 10px 15px 0px rgb(255, 231, 231,0.05);
 }
-.mbtiTestGobackButton:hover{
+.mbti-container .mbtiTestGobackButton:hover{
     background-color: rgb(255, 231, 231);
 }
 /* .mbtiResultPage{
@@ -60,7 +60,7 @@
     text-align: center;
     padding-top:100px ;
 } */
-.mbtiResultCard{
+.mbti-container .mbtiResultCard{
     height: 450px;
     margin:0 auto;
     position: relative;
@@ -70,10 +70,10 @@
     background-color: rgb(189, 197, 255,0.2);
 }
 
-a {
+.mbti-container a {
     text-decoration: none;
 }
-.mbtiResultCardText{
+.mbti-container .mbtiResultCardText{
     position:absolute;
     left:-50.5%;
     bottom: -16.3%;
@@ -85,7 +85,7 @@ a {
     background-color: azure;
     box-shadow: 5px 5px  rgb(255, 231, 231,0.05);
 }
-.flip { 
+.mbti-container .flip { 
 
     width: 500px;
     height: 600px;
@@ -93,36 +93,41 @@ a {
 
     perspective: 1100px;
 }
-.card {
+.mbti-container .mbti-card {
     width: 100%; 
     height: 100%; 
     position: relative;
     transition: .4s;
     transform-style: preserve-3d;
 }	
-.front, .back {
+.mbti-container .front,.mbti-container .back {
     position: absolute;
     width: 100%; 
-    height: 100%;
+    height: 60%;
     backface-visibility: hidden;
     /* text-align: center; */
 }
 
 
-.back { 
+.mbti-container .back { 
     transform: rotateY(180deg);
 }
-.flip:hover .card {
+.mbti-container .flip:hover .mbti-card {
     transform: rotateY(180deg);
+}
+
+.mbti-container .mbtiResultCard img {
+    height: 260px;
 }
 
 /* pokenmonball */
-.pokemon_ball {
+.mbti-container .pokemon_ball {
     position: relative;
 }
 
-.pokemon_ball img {
+.mbti-container .pokemon_ball img {
     margin-top: 80px;
+    width: 100px; height: 100px;
     z-index: 10;
     animation-name: spinningPokemonBall;
     animation-duration: 1s;
@@ -139,7 +144,7 @@ a {
     }
 }
 
-.pokemon_ball .shadow {
+.mbti-container .pokemon_ball .shadow {
     margin-top: 40px;
     position: absolute;
     top: 50%; left: 50%;

@@ -116,7 +116,7 @@ const TestPage = ({idx,setIdx}) =>{
     const j = idx % 3
     
 
-    return <div className='testpage'>
+    return <div className='mbti-testpage'>
         <h4>{query[i][j].question[0]}</h4>
         <p><button className="selectButton" onClick={()=>{
             if(idx<query.length*3){
@@ -160,7 +160,7 @@ const MBTI = () => {
     let resultMBTI="";
 
     const FirstPage = ()=>{
-        return <div className='testpage' style={{backgroundColor: "white"}}><button className="teststart" onClick={()=>{
+        return <div className='mbti-testpage' style={{backgroundColor: "white"}}><button className="teststart" onClick={()=>{
             setStart(true);
         }}>start</button></div>
     }
@@ -201,7 +201,7 @@ const MBTI = () => {
                 {/* <img src={mypokemonURL} width={300} height={300} /> */}
                 {/* <h3>{pokemonInfo[0]}</h3> */}
             <div className='flip'>
-                <div className='card' onCli>
+                <div className='mbti-card'>
                     <div className="front">
                     <Card className='mbtiResultCard'
                             hoverable
@@ -218,7 +218,7 @@ const MBTI = () => {
                             
                             <div className='pokemon_ball'>
                                 <div className='shadow'></div>
-                                <img alt="example" src={pokenmon_ball} width={100} height={100}/>
+                                <img alt="example" src={pokenmon_ball}/>
                             </div>
                         </div>
                         <div style={{margin: 50}}>hover</div>
@@ -232,7 +232,7 @@ const MBTI = () => {
                             marginTop: 150,
                             marginBottom: 10,
                             }}
-                            cover={<img alt="example" src={mypokemonURL} width={400} height={300} />}
+                            cover={<img alt="example" src={mypokemonURL} width={300} height={300}/>}
                         >
                             <div className='mbtiResultCardText'>
                                 <h1 style={{margin:0}}>{pokemonInfo[0]}</h1>
@@ -251,7 +251,7 @@ const MBTI = () => {
         )
     }
 
-    return <div>
+    return <div className='mbti-container'>
             {!start ?  <FirstPage></FirstPage> :( index === query.length*3 ? <ResultPage></ResultPage> : <TestPage idx={index} setIdx={setIndex}></TestPage> )}
         </div>
     
